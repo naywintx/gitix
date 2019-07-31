@@ -1,34 +1,40 @@
-import React from 'react'
-import styled from 'styled-components'
-import { NavLink } from 'react-router-dom'
-import { withRouter } from 'react-router-dom'
+import React from "react";
+import styled from "styled-components";
+import { NavLink } from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import { signUserOut } from "blockstack";
 
 const UserMenu = ({ username, id, closeMenu }) => (
-  <UserMenuContainer id={ id }>
-
-    <DropDownItem>{`Signed in as ${ username }`}</DropDownItem>
+  <UserMenuContainer id={id}>
+    <DropDownItem>{`Signed in as ${username}`}</DropDownItem>
     <DropDownDivider />
 
-    <NavLink to='/' onClick={ closeMenu }>
+    <NavLink to="/" onClick={closeMenu}>
       <DropDownItem>Your Profile</DropDownItem>
     </NavLink>
 
-    <NavLink to='/followers' onClick={ closeMenu }>
+    <NavLink to="/followers" onClick={closeMenu}>
       <DropDownItem>Your Followers</DropDownItem>
     </NavLink>
 
-    <NavLink to='/stars' onClick={ closeMenu }>
+    <NavLink to="/stars" onClick={closeMenu}>
       <DropDownItem>Your Stars</DropDownItem>
     </NavLink>
     <DropDownDivider />
-    <NavLink to='https://help.github.com/'>
+    <NavLink to="https://github.com/friedger/react-github/">
       <DropDownItem>Help</DropDownItem>
     </NavLink>
     <DropDownItem>Settings</DropDownItem>
-    <DropDownItem>Sign Out</DropDownItem>
-    
+    <NavLink
+      to="/"
+      onClick={() => {
+        signUserOut();
+      }}
+    >
+      <DropDownItem>Sign Out</DropDownItem>
+    </NavLink>
   </UserMenuContainer>
-)
+);
 
 const UserMenuContainer = styled.ul`
   position: absolute;
@@ -41,12 +47,12 @@ const UserMenuContainer = styled.ul`
   list-style: none;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(27,31,35,0.15);
+  border: 1px solid rgba(27, 31, 35, 0.15);
   border-radius: 4px;
-  box-shadow: 0 3px 12px rgba(27,31,35,0.15);
+  box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
   width: 180px;
   margin-top: 8px;
-`
+`;
 
 const DropDownItem = styled.li`
   cursor: pointer;
@@ -60,12 +66,12 @@ const DropDownItem = styled.li`
     color: #fff;
     background-color: #0366d6;
   }
-`
+`;
 
 const DropDownDivider = styled.li`
   height: 1px;
   margin: 8px 1px;
   background-color: #e1e4e8;
-`
+`;
 
-export default withRouter(UserMenu)
+export default withRouter(UserMenu);

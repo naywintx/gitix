@@ -1,7 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
 import { NavLink } from 'react-router-dom'
 
 const activeStyles = () => (
@@ -24,45 +22,45 @@ const Linkstyles = () => (
   }
 )
 
-const ProfileMenu = ({data: { viewer }}) => (
- 
-  <Nav> 
-    <NavLink 
+const ProfileMenu = ({viewer}) => (
+
+  <Nav>
+    <NavLink
       style={ Linkstyles() }
       activeStyle={ activeStyles() }
       exact
       to={`${process.env.PUBLIC_URL}/`} >Overview
     </NavLink>
 
-    <NavLink 
+    <NavLink
       style={ Linkstyles() }
       activeStyle={ activeStyles() }
       exact
       to={`${process.env.PUBLIC_URL}/repositories`} >Repositories
-      <Counter>{ viewer && viewer.repositories ? viewer.repositories.totalCount : null}</Counter>  
+      <Counter>{ viewer && viewer.repositories ? viewer.repositories.totalCount : null}</Counter>
     </NavLink>
-    
-    <NavLink 
+
+    <NavLink
       style={ Linkstyles() }
       activeStyle={ activeStyles() }
       exact
       to={`${process.env.PUBLIC_URL}/stars`} >Stars
-      <Counter>{ viewer && viewer.starredRepositories ? viewer.starredRepositories.totalCount : null}</Counter>  
+      <Counter>{ viewer && viewer.starredRepositories ? viewer.starredRepositories.totalCount : null}</Counter>
     </NavLink>
-      
-    <NavLink 
+
+    <NavLink
       style={ Linkstyles() }
       activeStyle={ activeStyles() }
       to={`${process.env.PUBLIC_URL}/followers`} >Followers
         <Counter>{ viewer && viewer.followers ? viewer.followers.totalCount : null}</Counter>
     </NavLink>
 
-    <NavLink 
+    <NavLink
       style={ Linkstyles() }
       activeStyle={ activeStyles() }
       exact
       to={`${process.env.PUBLIC_URL}/following`} >Following
-      <Counter>{ viewer && viewer.following ? viewer.following.totalCount : null}</Counter>  
+      <Counter>{ viewer && viewer.following ? viewer.following.totalCount : null}</Counter>
     </NavLink>
 
   </Nav>
@@ -84,21 +82,4 @@ const Counter = styled.span`
   margin-left: 6px;
 `
 
-export default graphql(gql`
-query {
-  viewer {
-    repositories {
-      totalCount
-    }
-    followers {
-      totalCount
-    }
-    following {
-      totalCount
-    }
-    starredRepositories{
-      totalCount
-    }
-  }
-}
-`)(ProfileMenu)
+export default ProfileMenu

@@ -1,31 +1,33 @@
-import React from "react"
-import { gql } from "apollo-boost"
-import { Query } from "react-apollo"
-import styled from 'styled-components'
-
-const GET_AVATAR = gql`
-  query {
-    viewer {
-      avatarUrl
-    }
-  }
-`
+import React from "react";
+import styled from "styled-components";
+import { isUserSignedIn, loadUserData } from "blockstack";
 
 class UserAvatar extends React.Component {
-  render() {
-    return (
-      <Query query={GET_AVATAR}>
-        {({ loading, error, data }) => {
-          if (loading) return <div>Loading...</div>;
-          if (error) return <div>Error :(</div>;
+  state = { loading: true, error: null, data: null };
 
-          return <ProfilePic src={data.viewer.avatarUrl} />;
-        }}
-      </Query>
-    )
+  componentDidMount() {
+    if (isUserSignedIn()) {
+      this.setState({
+        loading: false,
+        error: null,
+        data: {
+          viewer: {
+            avatarUrl: loadUserData().profile.image[0].contentUrl
+          }
+        }
+      });
+    }
+  }
+
+  render() {
+    const { loading, error, data } = this.state;
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error :(</div>;
+
+    return <ProfilePic src={data.viewer.avatarUrl} />;
   }
 }
-
 
 const ProfilePic = styled.img`
   border-radius: 3px;
@@ -34,6 +36,6 @@ const ProfilePic = styled.img`
   cursor: pointer;
   margin-right: 4px;
   margin-top: 8px;
-`
+`;
 
-export default UserAvatar
+export default UserAvatar;

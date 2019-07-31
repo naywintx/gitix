@@ -1,15 +1,13 @@
 import React from 'react';
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
 import styled from 'styled-components'
 
-const Contributions = ({ data: { viewer }}) => {
-  
-  const repos = viewer && viewer.repositories ? viewer.repositories.edges.map(repo => (
-      <RepoCard key={ repo.node.name }>
-        <RepoLink>{ repo.node.name }</RepoLink>
-        <RepoDescription>{ repo.node.description }</RepoDescription>
-        <RepoDetails>{ repo.node.languages.edges[0].node.name } <Icon className="fa fa-star" aria-hidden="true"></Icon> { repo.node.stargazers.totalCount } <Icon className="fa fa-code-fork" aria-hidden="true"></Icon> { repo.node.forkCount }</RepoDetails>
+const Contributions = () => {
+  const [repositories, setRepositories] = useState([])
+  const repos = repositories ? repositories.map(repo => (
+      <RepoCard key={ repo.name }>
+        <RepoLink>{ repo.name }</RepoLink>
+        <RepoDescription>{ repo.description }</RepoDescription>
+        <RepoDetails>{ repo.languages[0].name } <Icon className="fa fa-star" aria-hidden="true"></Icon> { repo.stargazers.totalCount } <Icon className="fa fa-code-fork" aria-hidden="true"></Icon> { repo.forkCount }</RepoDetails>
       </RepoCard>
     )
   ) : []
@@ -54,29 +52,4 @@ const Icon = styled.i`
   margin-left: 16px;
 `
 
-export default graphql(gql`
-query {
-  viewer {
-    repositories(first:6, orderBy: {field: STARGAZERS, direction: DESC}) {
-      totalCount
-      edges {
-        node {
-          name
-          description 
-          languages(first: 1, orderBy: {field: SIZE, direction: DESC}) {
-            edges {
-              node {
-                name
-              }
-            }
-          }  
-          forkCount
-          stargazers {
-            totalCount
-          }
-        }
-      }
-    }
-  }
-}
-`)(Contributions)
+export default Contributions
