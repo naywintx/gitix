@@ -2,13 +2,18 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
 import { isUserSignedIn, getFile } from "blockstack";
+import { sampleRepos } from "./Repositories";
 
 class Overview extends Component {
   state = { repositories: [] };
   componentDidMount() {
     if (isUserSignedIn) {
       getFile("repositories").then(repositories => {
-        this.setState(repositories);
+        if (repositories) {
+          this.setState({ repositories });
+        } else {
+          this.setState({ repositories: sampleRepos });
+        }
       });
     }
   }
@@ -23,18 +28,18 @@ class Overview extends Component {
           return (
             <RepoCard key={repo.name}>
               <RepoLink>{repo.name}</RepoLink>
-              <RepoDescription>{repo.node.description}</RepoDescription>
+              <RepoDescription>{repo.description}</RepoDescription>
               <RepoInfoContainer>
                 <Circle />
                 <RepoDetails>
-                  {repo.node.languages.edges &&
-                    repo.node.languages.edges[0] &&
-                    repo.node.languages.edges[0].node.name &&
-                    repo.node.languages.edges[0].node.name}{" "}
+                  {repo.languages &&
+                    repo.languages[0] &&
+                    repo.languages[0].name &&
+                    repo.languages[0].name}{" "}
                   <Icon className="fa fa-star" aria-hidden="true" />{" "}
-                  {repo.node.stargazers.totalCount}{" "}
+                  {repo.stargazers.totalCount}{" "}
                   <Icon className="fa fa-code-fork" aria-hidden="true" />{" "}
-                  {repo.node.forkCount}
+                  {repo.forkCount}
                 </RepoDetails>
               </RepoInfoContainer>
             </RepoCard>

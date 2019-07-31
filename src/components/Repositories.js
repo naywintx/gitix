@@ -4,6 +4,17 @@ import moment from "moment";
 import LoadingIndicator from "./LoadingIndicator";
 import { isUserSignedIn, getFile } from "blockstack";
 
+export const sampleRepos = [
+  {
+    name: "react-github",
+    owner: { username: "Pau1fitz (github.com)" },
+    url: "https://github.com/Pau1fitz/react-github",
+    description: "A Github client built with React / GraphQL",
+    languages: [{ name: "javascript" }],
+    stargazers: { totalCount: 43 },
+    forkCount: 5
+  }
+];
 class Repo extends Component {
   state = {
     repos: [],
@@ -19,15 +30,19 @@ class Repo extends Component {
           this.setState({
             repos
           });
+        } else {
+          this.setState({
+            repos: sampleRepos
+          });
         }
-        this.setState({loading:false})
+        this.setState({ loading: false });
       });
     }
   }
 
   searchRepos = e => {
     const repos = this.state.repos.filter(repo => {
-      if (repo.node.name.indexOf(e.target.value) > -1) {
+      if (repo.name.indexOf(e.target.value) > -1) {
         return repo;
       } else {
         return null;
@@ -45,34 +60,31 @@ class Repo extends Component {
 
     const visibleRepos = filtered ? filteredRepos : repos;
 
-    const repositories =
-      !loading ? (
-        visibleRepos.map((repo, i) => {
-          return (
-            <RepoCard key={i}>
-              <RepoLink href={repo.url}>{repo.name}</RepoLink>
-              <RepoDescription>{repo.description}</RepoDescription>
-              <InfoContainer>
-                <Circle />
-                <RepoDetails>
-                  {repo.languages.edges &&
-                  repo.languages.edges[0] &&
-                  repo.languages.edges[0].node.name
-                    ? repo.languages.edges[0].node.name
-                    : null}{" "}
-                  <Icon className="fa fa-star" aria-hidden="true" />{" "}
-                  {repo.stargazers.totalCount}{" "}
-                  <Icon className="fa fa-code-fork" aria-hidden="true" />{" "}
-                  {repo.forkCount}
-                </RepoDetails>
-                <Date>{moment(repo.updatedAt).fromNow()}</Date>
-              </InfoContainer>
-            </RepoCard>
-          );
-        })
-      ) : (
-        <LoadingIndicator />
-      );
+    const repositories = !loading ? (
+      visibleRepos.map((repo, i) => {
+        return (
+          <RepoCard key={i}>
+            <RepoLink href={repo.url}>{repo.name}</RepoLink>
+            <RepoDescription>{repo.description}</RepoDescription>
+            <InfoContainer>
+              <Circle />
+              <RepoDetails>
+                {repo.languages && repo.languages[0] && repo.languages[0].name
+                  ? repo.languages[0].name
+                  : null}{" "}
+                <Icon className="fa fa-star" aria-hidden="true" />{" "}
+                {repo.stargazers.totalCount}{" "}
+                <Icon className="fa fa-code-fork" aria-hidden="true" />{" "}
+                {repo.forkCount}
+              </RepoDetails>
+              <Date>{moment(repo.updatedAt).fromNow()}</Date>
+            </InfoContainer>
+          </RepoCard>
+        );
+      })
+    ) : (
+      <LoadingIndicator />
+    );
 
     return (
       <div>

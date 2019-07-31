@@ -3,7 +3,15 @@ import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
 
 const Following = () => {
-  const [following, setFollowing] = useState([]);
+  const [following, setFollowing] = useState([
+    {
+      avatarUrl:
+        "https://gaia.blockstack.org/hub/1Maw8BjWgj6MWrBCfupqQuWANthMhefb2v/0/avatar-0",
+      name: "Friedger Müffke",
+      username: "friedger (github.com)",
+      bio: "Entredeveloper in Europe"
+    }
+  ]);
 
   const follow = following ? (
     following.map((follower, i) => {
@@ -15,7 +23,7 @@ const Following = () => {
             <FollowersInfoContainer>
               <FollowersName>
                 <FollowerName>{follower.name}</FollowerName>
-                <FollowerLogin>{follower.login}</FollowerLogin>
+                <FollowerLogin>{follower.username}</FollowerLogin>
               </FollowersName>
 
               <FollowerBio>{follower.bio}</FollowerBio>

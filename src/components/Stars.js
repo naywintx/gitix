@@ -3,6 +3,7 @@ import styled from "styled-components";
 import moment from "moment";
 import LoadingIndicator from "./LoadingIndicator";
 import { isUserSignedIn, getFile } from "blockstack";
+import { sampleRepos } from "./Repositories";
 
 class Stars extends Component {
   state = {
@@ -18,6 +19,10 @@ class Stars extends Component {
         if (starredRepositories) {
           this.setState({
             starredRepositories
+          });
+        } else {
+          this.setState({
+            starredRepositories: sampleRepos
           });
         }
         this.setState({ loading: false });
@@ -41,40 +46,44 @@ class Stars extends Component {
   };
 
   render() {
-    const { starredRepositories, filteredRepos, filtered, loading } = this.state;
+    const {
+      starredRepositories,
+      filteredRepos,
+      filtered,
+      loading
+    } = this.state;
 
     const visibleRepos = filtered ? filteredRepos : starredRepositories;
 
-    const repositories =
-      !loading ? (
-        visibleRepos.map((star, i) => {
-          return (
-            <StarCard key={star.nameWithOwner}>
-              <Link href={`https://www.github.com/${star.nameWithOwner}`}>
-                <Name>{star.owner.login}</Name> / <Owner>{star.name}</Owner>
-              </Link>
-              <StarDescription>{star.description}</StarDescription>
-              <InfoContainer>
-                <Circle />
-                <Language>
-                  {star.languages.edges[0] &&
-                  star.languages.edges[0].node &&
-                  star.languages.edges[0].node.name
-                    ? star.languages.edges[0].node.name
-                    : null}
-                </Language>
-                <Icon className="fa fa-star" aria-hidden="true" />
-                <Count>{star.stargazers.totalCount.toLocaleString()}</Count>
-                <Icon className="fa fa-code-fork" aria-hidden="true" />
-                <Count>{star.forkCount.toLocaleString()}</Count>
-                <Date>{moment(star.updatedAt).fromNow()}</Date>
-              </InfoContainer>
-            </StarCard>
-          );
-        })
-      ) : (
-        <LoadingIndicator />
-      );
+    const repositories = !loading ? (
+      visibleRepos.map((star, i) => {
+        return (
+          <StarCard key={star.url}>
+            <Link href={star.url}>
+              <Name>{star.owner.username}</Name> / <Owner>{star.name}</Owner>
+            </Link>
+            <StarDescription>{star.description}</StarDescription>
+            <InfoContainer>
+              <Circle />
+              <Language>
+                {star.languages[0] &&
+                star.languages[0] &&
+                star.languages[0].name
+                  ? star.languages[0].name
+                  : null}
+              </Language>
+              <Icon className="fa fa-star" aria-hidden="true" />
+              <Count>{star.stargazers.totalCount.toLocaleString()}</Count>
+              <Icon className="fa fa-code-fork" aria-hidden="true" />
+              <Count>{star.forkCount.toLocaleString()}</Count>
+              <Date>{moment(star.updatedAt).fromNow()}</Date>
+            </InfoContainer>
+          </StarCard>
+        );
+      })
+    ) : (
+      <LoadingIndicator />
+    );
 
     return (
       <section>
