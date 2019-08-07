@@ -4,7 +4,7 @@ import { AppConfig, UserSession } from "blockstack";
 
 const LoginScreen = () => {
   const login = () => {
-    const appConfig = new AppConfig();
+    const appConfig = new AppConfig(["store_write", "publish_data"]);
     const userSession = new UserSession({ appConfig });
     userSession.redirectToSignIn();
   };

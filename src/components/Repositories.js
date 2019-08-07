@@ -8,7 +8,7 @@ import { NavLink } from "react-router-dom";
 export const sampleRepos = [
   {
     name: "react-github",
-    owner: { username: "Pau1fitz (github.com)" },
+    owner: { username: "Example Pau1fitz (github.com)" },
     url: "https://github.com/Pau1fitz/react-github",
     description: "A Github client built with React / GraphQL",
     languages: [{ name: "javascript" }],
