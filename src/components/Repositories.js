@@ -3,6 +3,7 @@ import styled from "styled-components";
 import moment from "moment";
 import LoadingIndicator from "./LoadingIndicator";
 import { isUserSignedIn, getFile } from "blockstack";
+import { NavLink } from "react-router-dom";
 
 export const sampleRepos = [
   {
@@ -24,11 +25,11 @@ class Repo extends Component {
   };
 
   componentDidMount() {
-    if (isUserSignedIn) {
-      getFile("repositories").then(repos => {
+    if (isUserSignedIn()) {
+      getFile("repositories", { decrypt: false }).then(repos => {
         if (repos) {
           this.setState({
-            repos
+            repos: JSON.parse(repos)
           });
         } else {
           this.setState({
@@ -73,7 +74,7 @@ class Repo extends Component {
                   ? repo.languages[0].name
                   : null}{" "}
                 <Icon className="fa fa-star" aria-hidden="true" />{" "}
-                {repo.stargazers.totalCount}{" "}
+                {repo.stargazers && repo.stargazers.totalCount}{" "}
                 <Icon className="fa fa-code-fork" aria-hidden="true" />{" "}
                 {repo.forkCount}
               </RepoDetails>
@@ -88,6 +89,11 @@ class Repo extends Component {
 
     return (
       <div>
+        <NavLink to={`${process.env.PUBLIC_URL}/repositories/add`}>
+          <AddButton>
+            <ButtonIcon className="fa fa-book" /> Add
+          </AddButton>
+        </NavLink>
         {repos.length > 0 && (
           <SearchContainer>
             <SearchBox
@@ -102,6 +108,32 @@ class Repo extends Component {
     );
   }
 }
+
+const AddButton = styled.a`
+  cursor: pointer;
+  border-radius: 0.25em;
+  color: white;
+  background-color: #28a745;
+  background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+  font-size: 12px;
+  line-height: 20px;
+  padding: 3px 10px;
+  background-position: -1px -1px;
+  background-repeat: repeat-x;
+  background-size: 110% 110%;
+  border: 1px solid rgba(27, 31, 35, 0.2);
+  display: inline-block;
+  font-weight: 600;
+  position: relative;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-decoration: none;
+  box-sizing: border-box;
+  margin: 8px 0px;
+  hover: {
+    text-decoration: none;
+  }
+`;
 
 const RepoCard = styled.div`
   border-bottom: 1px #d1d5da solid;
@@ -167,6 +199,8 @@ const RepoDetails = styled.span`
   font-size: 12px;
   margin-bottom: 0;
 `;
+
+const ButtonIcon = styled.i``;
 
 const Icon = styled.i`
   margin-left: 16px;

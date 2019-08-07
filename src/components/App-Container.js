@@ -6,12 +6,14 @@ import Nav from "./Nav";
 import Profile from "./Profile";
 import Overview from "./Overview";
 import Repositories from "./Repositories";
+import AddRepositories from "./AddRepositories";
 import Followers from "./Followers";
 import Following from "./Following";
 import ProfileMenu from "./ProfileMenu";
 import PullRequests from "./PullRequests";
 import Issues from "./Issues";
 import Stars from "./Stars";
+import User from "./User";
 
 import { isUserSignedIn, loadUserData } from "blockstack";
 
@@ -45,8 +47,14 @@ const Home = ({
             component={Overview}
           />
           <Route
+            exact
             path={`${process.env.PUBLIC_URL}/repositories`}
             component={Repositories}
+          />
+          <Route
+            exact
+            path={`${process.env.PUBLIC_URL}/repositories/add`}
+            component={AddRepositories}
           />
           <Route
             path={`${process.env.PUBLIC_URL}/followers`}
@@ -100,6 +108,11 @@ class App extends Component {
           <Route
             path={`${process.env.PUBLIC_URL}/pullrequests`}
             component={PullRequests}
+          />
+          <Route
+            exact
+            path={`${process.env.PUBLIC_URL}/u/:user`}
+            component={User}
           />
           <Route
             path={`${process.env.PUBLIC_URL}/`}

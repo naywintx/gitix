@@ -7,10 +7,10 @@ import { sampleRepos } from "./Repositories";
 class Overview extends Component {
   state = { repositories: [] };
   componentDidMount() {
-    if (isUserSignedIn) {
-      getFile("repositories").then(repositories => {
+    if (isUserSignedIn()) {
+      getFile("repositories", { decrypt: false }).then(repositories => {
         if (repositories) {
-          this.setState({ repositories });
+          this.setState({ repositories: JSON.parse(repositories) });
         } else {
           this.setState({ repositories: sampleRepos });
         }
@@ -37,7 +37,7 @@ class Overview extends Component {
                     repo.languages[0].name &&
                     repo.languages[0].name}{" "}
                   <Icon className="fa fa-star" aria-hidden="true" />{" "}
-                  {repo.stargazers.totalCount}{" "}
+                  {repo.stargazers && repo.stargazers.totalCount}{" "}
                   <Icon className="fa fa-code-fork" aria-hidden="true" />{" "}
                   {repo.forkCount}
                 </RepoDetails>

@@ -22,7 +22,8 @@ const LoginScreen = () => {
           C95.021,50.468,95.021,46.719,92.71,44.408z"
         />
       </Logo>
-      <Title>Decentralized Git Center</Title>
+      <Title>Gitix</Title>
+      <Subtitle>Decentralized Home of All Git Contributions</Subtitle>
       <LoginLink onClick={login}>Login with Blockstack</LoginLink>
     </LoginContainer>
   );
@@ -43,6 +44,13 @@ const LoginContainer = styled.div`
 const Title = styled.p`
   color: #fff;
   font-size: 24px;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+`;
+
+const Subtitle = styled.p`
+  color: #fff;
+  font-size: 20px;
   font-weight: 600;
   margin: 20px 0 10px 0;
 `;

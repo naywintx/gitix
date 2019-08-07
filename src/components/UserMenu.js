@@ -21,9 +21,9 @@ const UserMenu = ({ username, id, closeMenu }) => (
       <DropDownItem>Your Stars</DropDownItem>
     </NavLink>
     <DropDownDivider />
-    <NavLink to="https://github.com/friedger/react-github/">
+    <Link to="https://github.com/friedger/react-github/">
       <DropDownItem>Help</DropDownItem>
-    </NavLink>
+    </Link>
     <DropDownItem>Settings</DropDownItem>
     <NavLink
       to="/"
@@ -74,4 +74,7 @@ const DropDownDivider = styled.li`
   background-color: #e1e4e8;
 `;
 
+const Link = styled.a`
+  text-decoration: none;
+`;
 export default withRouter(UserMenu);

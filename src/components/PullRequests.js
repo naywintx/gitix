@@ -35,6 +35,7 @@ const PullRequests = () => {
   return (
     <div>
       <PRCountBG>
+        Pull requests will be shown here in the future
         <PRCount>{openPRs ? `${openPRs} Open` : null}</PRCount>
         <PRCount>{openPRs ? `${closedPRs} Closed` : null}</PRCount>
       </PRCountBG>

@@ -47,6 +47,14 @@ class Nav extends Component {
         menuOpen: false
       });
     }
+
+    const domNode2 = document.getElementById("dropdown-edit-menu");
+
+    if (domNode2 && !domNode2.contains(e.target)) {
+      this.setState({
+        editMenuOpen: false
+      });
+    }
   }
 
   openMenu = () => {
@@ -99,6 +107,7 @@ class Nav extends Component {
             >
               <NavItem>Issues</NavItem>
             </NavLink>
+
           </NavContainer>
 
           <UserSection>

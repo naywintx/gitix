@@ -14,7 +14,7 @@ class Stars extends Component {
   };
 
   componentDidMount() {
-    if (isUserSignedIn) {
+    if (isUserSignedIn()) {
       getFile("starred-repositories").then(starredRepositories => {
         if (starredRepositories) {
           this.setState({

@@ -1,49 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
+import { getFile } from "blockstack";
+import { NavLink } from "react-router-dom";
+
+const suggestedUsers = [
+  {
+    avatarUrl:
+      "https://gaia.blockstack.org/hub/1Maw8BjWgj6MWrBCfupqQuWANthMhefb2v/0/avatar-0",
+    name: "Friedger Müffke",
+    username: "friedger.id",
+    bio: "Entredeveloper in Europe"
+  }
+];
+
+const toFollowingUser = (follower, i) => {
+  return (
+    <FollowersCard key={i}>
+      <FollowersContainer>
+        <NavLink to={`/u/${follower.username}`}>
+          <FollowersImage src={follower.avatarUrl} />
+        </NavLink>
+        <FollowersInfoContainer>
+          <FollowersName>
+            <FollowerName>{follower.name}</FollowerName>
+            <FollowerLogin>{follower.username}</FollowerLogin>
+          </FollowersName>
+
+          <FollowerBio>{follower.bio}</FollowerBio>
+          {follower.location && (
+            <div>
+              <Icon className="fa fa-map-marker" />
+              <FollowerLocation>{follower.location}</FollowerLocation>
+            </div>
+          )}
+        </FollowersInfoContainer>
+      </FollowersContainer>
+    </FollowersCard>
+  );
+};
 
 const Following = () => {
-  const [following, setFollowing] = useState([
-    {
-      avatarUrl:
-        "https://gaia.blockstack.org/hub/1Maw8BjWgj6MWrBCfupqQuWANthMhefb2v/0/avatar-0",
-      name: "Friedger Müffke",
-      username: "friedger (github.com)",
-      bio: "Entredeveloper in Europe"
-    }
-  ]);
+  const [loading, setLoading] = useState(false);
 
-  const follow = following ? (
-    following.map((follower, i) => {
-      return (
-        <FollowersCard key={i}>
-          <FollowersContainer>
-            <FollowersImage src={follower.avatarUrl} />
+  const [following, setFollowing] = useState([]);
 
-            <FollowersInfoContainer>
-              <FollowersName>
-                <FollowerName>{follower.name}</FollowerName>
-                <FollowerLogin>{follower.username}</FollowerLogin>
-              </FollowersName>
+  useEffect(() => {
+    setLoading(true);
+    getFile("following").then(f => {
+      let followingUsers;
+      if (f) {
+        followingUsers = JSON.parse(f);
+      } else {
+        followingUsers = [];
+      }
+      setFollowing(followingUsers);
+      setLoading(false);
+    });
+  }, []);
 
-              <FollowerBio>{follower.bio}</FollowerBio>
-              {follower.location && (
-                <div>
-                  <Icon className="fa fa-map-marker" />
-                  <FollowerLocation>{follower.location}</FollowerLocation>
-                </div>
-              )}
-            </FollowersInfoContainer>
-          </FollowersContainer>
-        </FollowersCard>
-      );
-    })
+  const follow = !loading ? (
+    following.map(toFollowingUser)
   ) : (
     <LoadingIndicator />
   );
 
-  return <section>{follow}</section>;
+  return (
+    <>
+      <section>{follow}</section>
+      <Title>Users you might want to follow</Title>
+      <section>{suggestedUsers.map(toFollowingUser)}</section>
+    </>
+  );
 };
+
+const Title = styled.p`
+  color: #24292e;
+  font-size: 16px;
+  margin-bottom: 8px;
+`;
 
 const Icon = styled.i`
   font-size: 18px;

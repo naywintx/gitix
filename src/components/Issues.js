@@ -36,6 +36,7 @@ const Issues = () => {
   return (
     <div>
       <IssueCountBG>
+      Issues across all git repos will be shown here in the future
         <IssueCount>{openIssues ? `${openIssues} Open` : null}</IssueCount>
         <IssueCount>
           {closedIssues ? `${closedIssues} Closed` : null}
