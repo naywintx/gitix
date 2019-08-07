@@ -20,7 +20,12 @@ class User extends Component {
       lookupProfile(this.props.match.params.user).then(user => {
         this.setState({ user });
         getFile("following").then(f => {
-          const following = JSON.parse(f);
+          let following;
+          if (f) {
+            following = JSON.parse(f);
+          } else {
+            following = [];
+          }
           const followingUserList = following.filter(
             u => u.username === this.props.match.params.user
           );
