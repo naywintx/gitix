@@ -3,7 +3,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 const PullRequests = () => {
-  const [pullRequests, setPullRequests] = useState([]);
+  const [pullRequests] = useState([]);
   const prs = pullRequests
     ? pullRequests.map(pr => (
         <PRCard key={pr.publishedAt}>

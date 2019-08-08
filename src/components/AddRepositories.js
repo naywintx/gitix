@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import moment from "moment";
 import LoadingIndicator from "./LoadingIndicator";
 import { isUserSignedIn, getFile, putFile } from "blockstack";
-import { NavLink } from "react-router-dom";
 import { sampleRepos } from "./Repositories";
 
 class AddRepo extends Component {
@@ -68,7 +66,7 @@ class AddRepo extends Component {
   }
 
   render() {
-    const { repos, loading, updating } = this.state;
+    const { loading, updating } = this.state;
 
     return (
       <div>

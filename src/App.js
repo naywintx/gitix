@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 import LoginScreen from "./components/LoginScreen";
 import AppContainer from "./components/App-Container";
+import { withRouter } from "react-router-dom";
 import { Loading } from "gitstar-components";
-import { isSignInPending, handlePendingSignIn, isUserSignedIn, loadUserData } from "blockstack";
+import {
+  isSignInPending,
+  handlePendingSignIn,
+  isUserSignedIn
+} from "blockstack";
 
 const STATUS = {
   INITIAL: "initial",
@@ -13,24 +18,23 @@ const STATUS = {
 
 class App extends Component {
   state = {
-    status: STATUS.INITIAL,
-    token: null
+    status: STATUS.INITIAL
   };
 
   componentDidMount() {
     if (isSignInPending()) {
-      handlePendingSignIn().then(u =>
+      handlePendingSignIn().then(() => {
+        if (window) {
+          window.location.href = window.location.origin;
+        }
         this.setState({
-          token: u,
           status: STATUS.AUTHENTICATED
-        })
-      );
-      return;
+        });
+      });
     } else if (isUserSignedIn()) {
       this.setState({
-        token: loadUserData(),
         status: STATUS.AUTHENTICATED
-      })
+      });
     }
   }
   render() {
@@ -56,4 +60,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

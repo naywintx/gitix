@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { signUserOut } from "blockstack";
 
-const UserMenu = ({ username, id, closeMenu }) => (
+const UserMenu = ({ username, id, closeMenu, history }) => (
   <UserMenuContainer id={id}>
     <DropDownItem>{`Signed in as ${username}`}</DropDownItem>
     <DropDownDivider />
@@ -28,7 +28,9 @@ const UserMenu = ({ username, id, closeMenu }) => (
       to="/"
       onClick={() => {
         signUserOut();
-        this.props.history.push("/");
+        if (window) {
+          window.location.href = window.location.origin;
+        }
       }}
     >
       <DropDownItem>Sign Out</DropDownItem>

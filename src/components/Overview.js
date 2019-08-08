@@ -1,23 +1,57 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
-import { isUserSignedIn, getFile } from "blockstack";
+import { isUserSignedIn, getFile, loadUserData, putFile } from "blockstack";
 import { sampleRepos } from "./Repositories";
 
 class Overview extends Component {
-  state = { repositories: [] };
+  state = { repositories: [], githubRepos: [] };
   componentDidMount() {
     if (isUserSignedIn()) {
       getFile("repositories", { decrypt: false }).then(repositories => {
         if (repositories) {
           this.setState({ repositories: JSON.parse(repositories) });
         } else {
-          this.setState({ repositories: sampleRepos });
+          this.addGithubRepos();
         }
       });
     }
   }
 
+  addGithubRepos() {
+    const user = loadUserData();
+    if (user.profile.account) {
+      const githubAccounts = user.profile.account.filter(
+        a => a.service === "github"
+      );
+
+      if (githubAccounts.length > 0) {
+        fetch(
+          `https://api.github.com/users/${
+            githubAccounts[0].identifier
+          }/repos?sort=pushed`
+        )
+          .then(response => response.json())
+          .then(githubRepos => {
+            const repositories = githubRepos.map(ghRepo => {
+              return {
+                name: ghRepo.name,
+                owner: { username: ghRepo.owner.login },
+                url: ghRepo.html_url,
+                description: ghRepo.description,
+                languages: [{ name: ghRepo.language }],
+                stargazers: { totalCount: ghRepo.stargazers_count },
+                forkCount: ghRepo.forks_count
+              };
+            });
+            this.setState({ repositories });
+            putFile("repositories", JSON.stringify(repositories));
+          });
+      } else {
+        this.setState({ repositories: sampleRepos });
+      }
+    }
+  }
   render() {
     const { repositories } = this.state;
 

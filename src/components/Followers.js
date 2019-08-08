@@ -3,7 +3,7 @@ import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
 
 const Followers = () => {
-  const [followerList, setFollowerList] = useState([]);
+  const [followerList] = useState([]);
 
   const followers = followerList ? (
     followerList.map((follower, i) => {

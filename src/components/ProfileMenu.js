@@ -19,7 +19,7 @@ const Linkstyles = () => ({
 });
 
 const ProfileMenu = () => {
-  const [viewer, setViewer] = useState({
+  const [viewer] = useState({
     repositories: { totalCount: 1 },
     starredRepositories: { totalCount: 1 },
     followers: { totalCount: 0 },

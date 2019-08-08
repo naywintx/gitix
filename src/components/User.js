@@ -304,10 +304,6 @@ const Icon = styled.i`
   margin-left: 16px;
 `;
 
-const CalendarContainer = styled.div`
-  position: relative;
-`;
-
 const ProfileContainer = styled.section`
   display: flex;
   max-width: 1012px;

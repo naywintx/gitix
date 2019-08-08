@@ -3,7 +3,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 const Issues = () => {
-  const [issueList, setIssueList] = useState([]);
+  const [issueList] = useState([]);
 
   const issues = issueList
     ? issueList.map(issue => (
@@ -36,7 +36,7 @@ const Issues = () => {
   return (
     <div>
       <IssueCountBG>
-      Issues across all git repos will be shown here in the future
+        Issues across all git repos will be shown here in the future
         <IssueCount>{openIssues ? `${openIssues} Open` : null}</IssueCount>
         <IssueCount>
           {closedIssues ? `${closedIssues} Closed` : null}

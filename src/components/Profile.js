@@ -61,6 +61,8 @@ const Profile = ({
         <>
           <ContactButton
             href={`https://app.dmail.online/compose?to=${username}&subject=Gitix%20profile`}
+            rel="noopener noreferrer"
+            target="_blank"
           >
             <ButtonIcon className="fa fa-envelope" /> Contact
           </ContactButton>
