@@ -76,14 +76,21 @@ class App extends Component {
   componentDidMount() {
     if (isUserSignedIn()) {
       const user = loadUserData();
+      const avatarUrl =
+        user.profile &&
+        user.profile.image &&
+        user.profile.image.length > 0 &&
+        user.profile.image[0].contentUrl;
+      const userFullName = user.profile && user.profile.name;
+      const bio = user.profile && user.profile.description;
       this.setState({
         viewer: {
-          avatarUrl: user.profile.image[0].contentUrl,
-          userFullName: user.profile.name,
+          avatarUrl,
+          userFullName,
           username: user.username,
           location: null,
           company: null,
-          bio: user.profile.description,
+          bio,
           organizations: {}
         }
       });

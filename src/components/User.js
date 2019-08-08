@@ -63,8 +63,10 @@ class User extends Component {
       } else {
         following = JSON.parse(f);
       }
+      const avatarUrl =
+        user.image && user.image.length > 0 && user.image[0].contentUrl;
       following.push({
-        avatarUrl: user.image && user.image[0].contentUrl,
+        avatarUrl,
         name: user.name,
         username: this.props.match.params.user,
         bio: user.description
@@ -134,7 +136,8 @@ class User extends Component {
       <LoadingIndicator />
     );
 
-    const avatarUrl = user.image && user.image[0].contentUrl;
+    const avatarUrl =
+      user.image && user.image.length > 0 && user.image[0].contentUrl;
     const userFullName = user.name;
     const username = this.props.match.params.user;
     const location = null;
