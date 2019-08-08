@@ -27,7 +27,7 @@ class Overview extends Component {
         if (i < 6) {
           return (
             <RepoCard key={repo.name}>
-              <RepoLink>{repo.name}</RepoLink>
+              <RepoLink href={repo.url}>{repo.name}</RepoLink>
               <RepoDescription>{repo.description}</RepoDescription>
               <RepoInfoContainer>
                 <Circle />

@@ -21,14 +21,14 @@ const UserMenu = ({ username, id, closeMenu }) => (
       <DropDownItem>Your Stars</DropDownItem>
     </NavLink>
     <DropDownDivider />
-    <Link to="https://github.com/friedger/react-github/">
+    <Link to="https://github.com/friedger/gitix/">
       <DropDownItem>Help</DropDownItem>
     </Link>
-    <DropDownItem>Settings</DropDownItem>
     <NavLink
       to="/"
       onClick={() => {
         signUserOut();
+        this.props.history.push("/");
       }}
     >
       <DropDownItem>Sign Out</DropDownItem>

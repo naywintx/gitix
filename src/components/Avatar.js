@@ -31,7 +31,11 @@ class UserAvatar extends React.Component {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error :(</div>;
 
-    return <ProfilePic src={data.viewer.avatarUrl} />;
+    if (data.viewer && data.viewer.avatarUrl) {
+      return <ProfilePic src={data.viewer.avatarUrl} />;
+    } else {
+      return <Placeholder />;
+    }
   }
 }
 
@@ -42,6 +46,16 @@ const ProfilePic = styled.img`
   cursor: pointer;
   margin-right: 4px;
   margin-top: 8px;
+`;
+
+const Placeholder = styled.img`
+  border-radius: 3px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  margin-right: 4px;
+  margin-top: 8px;
+  background: #888;
 `;
 
 export default UserAvatar;

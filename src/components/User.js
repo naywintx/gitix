@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
-import { isUserSignedIn, getFile, lookupProfile, putFile } from "blockstack";
+import {
+  isUserSignedIn,
+  getFile,
+  lookupProfile,
+  putFile,
+  loadUserData
+} from "blockstack";
 import { sampleRepos } from "./Repositories";
 import Profile from "./Profile";
 
@@ -136,8 +142,10 @@ class User extends Component {
       <LoadingIndicator />
     );
 
+    console.log(user);
     const avatarUrl =
       user.image && user.image.length > 0 && user.image[0].contentUrl;
+    console.log(avatarUrl);
     const userFullName = user.name;
     const username = this.props.match.params.user;
     const location = null;
@@ -154,6 +162,7 @@ class User extends Component {
           company={company}
           bio={bio}
           organizations={organizations}
+          contactable={username !== loadUserData().username}
         />
 
         <div>
@@ -238,6 +247,7 @@ const UnfollowButton = styled.a`
     text-decoration: none;
   }
 `;
+
 const RepoContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
