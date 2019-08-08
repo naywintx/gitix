@@ -12,16 +12,16 @@ class Overview extends Component {
         if (repositories) {
           this.setState({ repositories: JSON.parse(repositories) });
         } else {
-          this.addGithubRepos();
+          const user = loadUserData();
+          this.addGithubRepos(user.profile);
         }
       });
     }
   }
 
-  addGithubRepos() {
-    const user = loadUserData();
-    if (user.profile.account) {
-      const githubAccounts = user.profile.account.filter(
+  addGithubRepos(profile) {
+    if (profile && profile.account) {
+      const githubAccounts = profile.account.filter(
         a => a.service === "github"
       );
 
@@ -52,6 +52,7 @@ class Overview extends Component {
       }
     }
   }
+
   render() {
     const { repositories } = this.state;
 

@@ -48,14 +48,62 @@ class User extends Component {
             if (repositories) {
               this.setState({ repositories: JSON.parse(repositories) });
             } else {
-              this.setState({ repositories: sampleRepos });
+              this.useGithubRepos(user).then(repositories => {
+                if (repositories) {
+                  this.setState({ repositories, loading: false });
+                } else {
+                  this.setState({ loading: false });
+                }
+              });
             }
             this.setState({ loading: false });
           })
           .catch(e => {
-            this.setState({ loading: false });
+            console.log(e.message);
+            if (e.message === "Missing readURL") {
+              this.useGithubRepos(user).then(repositories => {
+                if (repositories) {
+                  this.setState({ repositories, loading: false });
+                } else {
+                  this.setState({ loading: false });
+                }
+              });
+            }
           });
       });
+    }
+  }
+
+  useGithubRepos(profile) {
+    if (profile && profile.account) {
+      const githubAccounts = profile.account.filter(
+        a => a.service === "github"
+      );
+      console.log(githubAccounts);
+      if (githubAccounts.length > 0) {
+        return fetch(
+          `https://api.github.com/users/${
+            githubAccounts[0].identifier
+          }/repos?sort=pushed`
+        )
+          .then(response => response.json())
+          .then(githubRepos => {
+            const repositories = githubRepos.map(ghRepo => {
+              return {
+                name: ghRepo.name,
+                owner: { username: ghRepo.owner.login },
+                url: ghRepo.html_url,
+                description: ghRepo.description,
+                languages: [{ name: ghRepo.language }],
+                stargazers: { totalCount: ghRepo.stargazers_count },
+                forkCount: ghRepo.forks_count
+              };
+            });
+            return repositories;
+          });
+      } else {
+        return Promise.resolve(null);
+      }
     }
   }
 
@@ -117,7 +165,7 @@ class User extends Component {
         if (i < 6) {
           return (
             <RepoCard key={repo.name}>
-              <RepoLink>{repo.name}</RepoLink>
+              <RepoLink href={repo.url}>{repo.name}</RepoLink>
               <RepoDescription>{repo.description}</RepoDescription>
               <RepoInfoContainer>
                 <Circle />
@@ -142,10 +190,8 @@ class User extends Component {
       <LoadingIndicator />
     );
 
-    console.log(user);
     const avatarUrl =
       user.image && user.image.length > 0 && user.image[0].contentUrl;
-    console.log(avatarUrl);
     const userFullName = user.name;
     const username = this.props.match.params.user;
     const location = null;
