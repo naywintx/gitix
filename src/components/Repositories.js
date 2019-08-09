@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import LoadingIndicator from "./LoadingIndicator";
-import { isUserSignedIn, getFile } from "blockstack";
+import { isUserSignedIn, getFile, deleteFile } from "blockstack";
 import { NavLink } from "react-router-dom";
 
 export const sampleRepos = [
@@ -104,6 +104,18 @@ class Repo extends Component {
           </SearchContainer>
         )}
         {repositories}
+        {repos.length > 0 && (
+          <DeleteAllButton
+            onClick={() => {
+              deleteFile("repositories");
+              if (window) {
+                window.location.href = window.location.origin;
+              }
+            }}
+          >
+            <ButtonIcon className="fa fa-book" /> Hide All
+          </DeleteAllButton>
+        )}
       </div>
     );
   }
@@ -115,6 +127,32 @@ const AddButton = styled.a`
   color: white;
   background-color: #28a745;
   background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+  font-size: 12px;
+  line-height: 20px;
+  padding: 3px 10px;
+  background-position: -1px -1px;
+  background-repeat: repeat-x;
+  background-size: 110% 110%;
+  border: 1px solid rgba(27, 31, 35, 0.2);
+  display: inline-block;
+  font-weight: 600;
+  position: relative;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-decoration: none;
+  box-sizing: border-box;
+  margin: 8px 0px;
+  hover: {
+    text-decoration: none;
+  }
+`;
+
+const DeleteAllButton = styled.a`
+  cursor: pointer;
+  border-radius: 0.25em;
+  color: white;
+  background-color: #cb2431;
+  background-image: linear-gradient(-180deg, #de4450, #cb2431 90%);
   font-size: 12px;
   line-height: 20px;
   padding: 3px 10px;
