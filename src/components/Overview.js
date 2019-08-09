@@ -45,7 +45,9 @@ class Overview extends Component {
               };
             });
             this.setState({ repositories });
-            putFile("repositories", JSON.stringify(repositories));
+            putFile("repositories", JSON.stringify(repositories),  {
+              encrypt: false
+            });
           });
       } else {
         this.setState({ repositories: sampleRepos });
