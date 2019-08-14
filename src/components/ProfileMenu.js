@@ -20,10 +20,10 @@ const Linkstyles = () => ({
 
 const ProfileMenu = () => {
   const [viewer] = useState({
-    repositories: { totalCount: 1 },
-    starredRepositories: { totalCount: 1 },
-    followers: { totalCount: 0 },
-    following: { totalCount: 1 }
+    repositories: null,
+    starredRepositories: null,
+    followers: null,
+    following: null
   });
   return (
     <Nav>
@@ -43,11 +43,9 @@ const ProfileMenu = () => {
         to={`${process.env.PUBLIC_URL}/repositories`}
       >
         Repositories
-        <Counter>
-          {viewer && viewer.repositories
-            ? viewer.repositories.totalCount
-            : null}
-        </Counter>
+        {viewer && viewer.repositories && (
+          <Counter>{viewer.repositories.totalCount}</Counter>
+        )}
       </NavLink>
 
       <NavLink
@@ -57,11 +55,9 @@ const ProfileMenu = () => {
         to={`${process.env.PUBLIC_URL}/stars`}
       >
         Stars
-        <Counter>
-          {viewer && viewer.starredRepositories
-            ? viewer.starredRepositories.totalCount
-            : null}
-        </Counter>
+        {viewer && viewer.starredRepositories && (
+          <Counter>{viewer.starredRepositories.totalCount}</Counter>
+        )}
       </NavLink>
 
       <NavLink
@@ -70,9 +66,9 @@ const ProfileMenu = () => {
         to={`${process.env.PUBLIC_URL}/followers`}
       >
         Followers
-        <Counter>
-          {viewer && viewer.followers ? viewer.followers.totalCount : null}
-        </Counter>
+        {viewer && viewer.followers && (
+          <Counter>{viewer.followers.totalCount}</Counter>
+        )}
       </NavLink>
 
       <NavLink
@@ -82,9 +78,9 @@ const ProfileMenu = () => {
         to={`${process.env.PUBLIC_URL}/following`}
       >
         Following
-        <Counter>
-          {viewer && viewer.following ? viewer.following.totalCount : null}
-        </Counter>
+        {viewer && viewer.following && (
+          <Counter>{viewer.following.totalCount}</Counter>
+        )}
       </NavLink>
     </Nav>
   );

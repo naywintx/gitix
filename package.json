@@ -9,6 +9,7 @@
     "lodash": "^4.17.5",
     "moment": "^2.21.0",
     "react": "^16.8.6",
+    "react-blockstack-button": "^0.1.0",
     "react-dom": "^16.8.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.3.1",

@@ -28,6 +28,7 @@ class Repo extends Component {
     if (isUserSignedIn()) {
       getFile("repositories", { decrypt: false }).then(repos => {
         if (repos) {
+          console.log(JSON.parse(repos))
           this.setState({
             repos: JSON.parse(repos)
           });
