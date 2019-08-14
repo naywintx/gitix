@@ -28,10 +28,12 @@ class Repo extends Component {
     if (isUserSignedIn()) {
       getFile("repositories", { decrypt: false }).then(repos => {
         if (repos) {
-          console.log(JSON.parse(repos))
-          this.setState({
-            repos: JSON.parse(repos)
-          });
+          const repoArray = JSON.parse(repos);
+          if (Array.isArray(repoArray)) {
+            this.setState({
+              repos: repoArray
+            });
+          }
         } else {
           this.setState({
             repos: sampleRepos

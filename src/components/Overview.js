@@ -10,7 +10,10 @@ class Overview extends Component {
     if (isUserSignedIn()) {
       getFile("repositories", { decrypt: false }).then(repositories => {
         if (repositories) {
-          this.setState({ repositories: JSON.parse(repositories) });
+          const repoArray = JSON.parse(repositories);
+          if (Array.isArray(repoArray)) {
+            this.setState({ repositories: repoArray });
+          }
         } else {
           const user = loadUserData();
           this.addGithubRepos(user.profile);
@@ -45,7 +48,7 @@ class Overview extends Component {
               };
             });
             this.setState({ repositories });
-            putFile("repositories", JSON.stringify(repositories),  {
+            putFile("repositories", JSON.stringify(repositories), {
               encrypt: false
             });
           });
