@@ -33,6 +33,21 @@ class Repo extends Component {
             this.setState({
               repos: repoArray
             });
+          } else {
+            this.setState({
+              repos: [
+                {
+                  name: "invalid-repository-list",
+                  owner: { username: "gitix admin" },
+                  url: "https://github.com/friedger/gitix",
+                  description:
+                    "Please remove all repos from your gitix profile and start again. Sorry!",
+                  languages: [{ name: "javascript" }],
+                  stargazers: { totalCount: 0 },
+                  forkCount: 0
+                }
+              ]
+            });
           }
         } else {
           this.setState({
@@ -92,11 +107,9 @@ class Repo extends Component {
 
     return (
       <div>
-        <NavLink to={`${process.env.PUBLIC_URL}/repositories/add`}>
-          <AddButton>
-            <ButtonIcon className="fa fa-book" /> Add
-          </AddButton>
-        </NavLink>
+        <AddButton href={`${process.env.PUBLIC_URL}/#/repositories/add`}>
+          <ButtonIcon className="fa fa-book" /> Add
+        </AddButton>
         {repos.length > 0 && (
           <SearchContainer>
             <SearchBox
@@ -110,13 +123,15 @@ class Repo extends Component {
         {repos.length > 0 && (
           <DeleteAllButton
             onClick={() => {
-              deleteFile("repositories");
-              if (window) {
-                window.location.href = window.location.origin;
-              }
+              deleteFile("repositories").then(() => {
+                if (window) {
+                  window.location.href = window.location.origin;
+                }
+              });
             }}
           >
-            <ButtonIcon className="fa fa-book" /> Hide All
+            <ButtonIcon className="fa fa-book" /> Remove all repos from gitix
+            profile
           </DeleteAllButton>
         )}
       </div>
