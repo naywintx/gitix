@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import moment from "moment";
 import LoadingIndicator from "./LoadingIndicator";
-import { isUserSignedIn, getFile, deleteFile } from "blockstack";
-import { NavLink } from "react-router-dom";
+import {
+  isUserSignedIn,
+  getRepositories,
+  deleteRepositories
+} from "../lib/blockstack";
+import RepoCard from "./RepoCard";
 
 export const sampleRepos = [
   {
@@ -26,29 +29,9 @@ class Repo extends Component {
 
   componentDidMount() {
     if (isUserSignedIn()) {
-      getFile("repositories", { decrypt: false }).then(repos => {
+      getRepositories().then(repos => {
         if (repos) {
-          const repoArray = JSON.parse(repos);
-          if (Array.isArray(repoArray)) {
-            this.setState({
-              repos: repoArray
-            });
-          } else {
-            this.setState({
-              repos: [
-                {
-                  name: "invalid-repository-list",
-                  owner: { username: "gitix admin" },
-                  url: "https://github.com/friedger/gitix",
-                  description:
-                    "Please remove all repos from your gitix profile and start again. Sorry!",
-                  languages: [{ name: "javascript" }],
-                  stargazers: { totalCount: 0 },
-                  forkCount: 0
-                }
-              ]
-            });
-          }
+          this.setState({ repos });
         } else {
           this.setState({
             repos: sampleRepos
@@ -81,25 +64,7 @@ class Repo extends Component {
 
     const repositories = !loading ? (
       visibleRepos.map((repo, i) => {
-        return (
-          <RepoCard key={i}>
-            <RepoLink href={repo.url}>{repo.name}</RepoLink>
-            <RepoDescription>{repo.description}</RepoDescription>
-            <InfoContainer>
-              <Circle />
-              <RepoDetails>
-                {repo.languages && repo.languages[0] && repo.languages[0].name
-                  ? repo.languages[0].name
-                  : null}{" "}
-                <Icon className="fa fa-star" aria-hidden="true" />{" "}
-                {repo.stargazers && repo.stargazers.totalCount}{" "}
-                <Icon className="fa fa-code-fork" aria-hidden="true" />{" "}
-                {repo.forkCount}
-              </RepoDetails>
-              <Date>{moment(repo.updatedAt).fromNow()}</Date>
-            </InfoContainer>
-          </RepoCard>
-        );
+        return <RepoCard key={i} repo={repo} className="list" />;
       })
     ) : (
       <LoadingIndicator />
@@ -123,7 +88,7 @@ class Repo extends Component {
         {repos.length > 0 && (
           <DeleteAllButton
             onClick={() => {
-              deleteFile("repositories").then(() => {
+              deleteRepositories().then(() => {
                 if (window) {
                   window.location.href = window.location.origin;
                 }
@@ -160,7 +125,7 @@ const AddButton = styled.a`
   text-decoration: none;
   box-sizing: border-box;
   margin: 8px 0px;
-  hover: {
+  &:hover: {
     text-decoration: none;
   }
 `;
@@ -186,15 +151,9 @@ const DeleteAllButton = styled.a`
   text-decoration: none;
   box-sizing: border-box;
   margin: 8px 0px;
-  hover: {
+  &:hover: {
     text-decoration: none;
   }
-`;
-
-const RepoCard = styled.div`
-  border-bottom: 1px #d1d5da solid;
-  padding: 16px;
-  margin-bottom: 16px;
 `;
 
 const SearchContainer = styled.div`
@@ -216,50 +175,6 @@ const SearchBox = styled.input`
   box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
 `;
 
-const Date = styled.p`
-  font-size: 12px;
-  color: #586069;
-  margin-left: 10px;
-  margin-bottom: 0;
-`;
-
-const InfoContainer = styled.div`
-  display: flex;
-`;
-
-const Circle = styled.div`
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  background: #f1e05a;
-  margin-right: 5px;
-  top: 2px;
-  position: relative;
-`;
-
-const RepoDescription = styled.p`
-  font-size: 14px;
-  color: #586069;
-  margin: 4px 0 10px 0;
-`;
-
-const RepoLink = styled.a`
-  font-weight: 600;
-  color: #0366d6;
-  cursor: pointer;
-  font-size: 20px;
-`;
-
-const RepoDetails = styled.span`
-  color: #586069;
-  font-size: 12px;
-  margin-bottom: 0;
-`;
-
 const ButtonIcon = styled.i``;
-
-const Icon = styled.i`
-  margin-left: 16px;
-`;
 
 export default Repo;

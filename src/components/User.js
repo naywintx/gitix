@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
-import {
-  isUserSignedIn,
-  getFile,
-  lookupProfile,
-  putFile,
-  loadUserData
-} from "blockstack";
-import { sampleRepos } from "./Repositories";
 import Profile from "./Profile";
+import RepoCard from "./RepoCard";
+import {
+  getGithubRepos,
+  getRepositories,
+  getFollowing,
+  isUserSignedIn,
+  loadUserData,
+  lookupProfile,
+  putFollowing
+} from "../lib/blockstack";
 
 class User extends Component {
   state = {
@@ -25,13 +27,7 @@ class User extends Component {
     if (isUserSignedIn()) {
       lookupProfile(this.props.match.params.user).then(user => {
         this.setState({ user });
-        getFile("following").then(f => {
-          let following;
-          if (f) {
-            following = JSON.parse(f);
-          } else {
-            following = [];
-          }
+        getFollowing().then(following => {
           const followingUserList = following.filter(
             u => u.username === this.props.match.params.user
           );
@@ -40,15 +36,13 @@ class User extends Component {
             isFollowingUser: followingUserList.length > 0
           });
         });
-        getFile("repositories", {
-          decrypt: false,
-          username: this.props.match.params.user
-        })
+        getRepositories(this.props.match.params.user)
           .then(repositories => {
+            console.log({ repositories });
             if (repositories) {
-              this.setState({ repositories: JSON.parse(repositories) });
+              this.setState({ repositories });
             } else {
-              this.useGithubRepos(user).then(repositories => {
+              getGithubRepos(user).then(repositories => {
                 if (repositories) {
                   this.setState({ repositories, loading: false });
                 } else {
@@ -60,63 +54,16 @@ class User extends Component {
           })
           .catch(e => {
             console.log(e.message);
-            if (e.message === "Missing readURL") {
-              this.useGithubRepos(user).then(repositories => {
-                if (repositories) {
-                  this.setState({ repositories, loading: false });
-                } else {
-                  this.setState({ loading: false });
-                }
-              });
-            }
+            this.setState({ loading: false });
           });
       });
-    }
-  }
-
-  useGithubRepos(profile) {
-    if (profile && profile.account) {
-      const githubAccounts = profile.account.filter(
-        a => a.service === "github"
-      );
-      console.log(githubAccounts);
-      if (githubAccounts.length > 0) {
-        return fetch(
-          `https://api.github.com/users/${
-            githubAccounts[0].identifier
-          }/repos?sort=pushed`
-        )
-          .then(response => response.json())
-          .then(githubRepos => {
-            const repositories = githubRepos.map(ghRepo => {
-              return {
-                name: ghRepo.name,
-                owner: { username: ghRepo.owner.login },
-                url: ghRepo.html_url,
-                description: ghRepo.description,
-                languages: [{ name: ghRepo.language }],
-                stargazers: { totalCount: ghRepo.stargazers_count },
-                forkCount: ghRepo.forks_count
-              };
-            });
-            return repositories;
-          });
-      } else {
-        return Promise.resolve(null);
-      }
     }
   }
 
   followUser() {
     this.setState({ updating: true });
     const { user } = this.state;
-    getFile("following").then(f => {
-      let following;
-      if (!f) {
-        following = [];
-      } else {
-        following = JSON.parse(f);
-      }
+    getFollowing().then(following => {
       const avatarUrl =
         user.image && user.image.length > 0 && user.image[0].contentUrl;
       following.push({
@@ -125,7 +72,7 @@ class User extends Component {
         username: this.props.match.params.user,
         bio: user.description
       });
-      putFile("following", JSON.stringify(following)).then(
+      putFollowing(following).then(
         this.setState({ updating: false, isFollowingUser: true })
       );
     });
@@ -133,17 +80,11 @@ class User extends Component {
 
   unfollowUser() {
     this.setState({ updating: true });
-    getFile("following").then(f => {
-      let following;
-      if (!f) {
-        following = [];
-      } else {
-        following = JSON.parse(f);
-      }
+    getFollowing().then(following => {
       const newList = following.filter(
         f => f.username !== this.props.match.params.user
       );
-      putFile("following", JSON.stringify(newList)).then(
+      putFollowing(newList).then(
         this.setState({ updating: false, isFollowingUser: false })
       );
     });
@@ -159,29 +100,12 @@ class User extends Component {
       isFollowingUser
     } = this.state;
 
+    console.log({ repos: repositories });
     const repos = repositories ? (
       repositories.map((repo, i) => {
         // Only show 6 repos
         if (i < 6) {
-          return (
-            <RepoCard key={repo.name}>
-              <RepoLink href={repo.url}>{repo.name}</RepoLink>
-              <RepoDescription>{repo.description}</RepoDescription>
-              <RepoInfoContainer>
-                <Circle />
-                <RepoDetails>
-                  {repo.languages &&
-                    repo.languages[0] &&
-                    repo.languages[0].name &&
-                    repo.languages[0].name}{" "}
-                  <Icon className="fa fa-star" aria-hidden="true" />{" "}
-                  {repo.stargazers && repo.stargazers.totalCount}{" "}
-                  <Icon className="fa fa-code-fork" aria-hidden="true" />{" "}
-                  {repo.forkCount}
-                </RepoDetails>
-              </RepoInfoContainer>
-            </RepoCard>
-          );
+          return <RepoCard key={repo.name} repo={repo} className="card" />;
         } else {
           return null;
         }
@@ -263,7 +187,7 @@ const FollowButton = styled.a`
   text-decoration: none;
   box-sizing: border-box;
   margin: 8px 0px;
-  hover: {
+  &:hover: {
     text-decoration: none;
   }
 `;
@@ -289,7 +213,7 @@ const UnfollowButton = styled.a`
   text-decoration: none;
   box-sizing: border-box;
   margin: 8px 0px;
-  hover: {
+  &:hover: {
     text-decoration: none;
   }
 `;
@@ -300,54 +224,10 @@ const RepoContainer = styled.div`
   justify-content: space-between;
 `;
 
-const RepoCard = styled.div`
-  border: 1px #d1d5da solid;
-  padding: 16px;
-  width: 362px;
-  margin-bottom: 16px;
-`;
-
-const RepoDescription = styled.p`
-  font-size: 12px;
-  color: #586069;
-  margin: 4px 0 10px 0;
-`;
-
-const RepoInfoContainer = styled.div`
-  display: flex;
-`;
-
-const Circle = styled.div`
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  background: #f1e05a;
-  margin-right: 5px;
-  top: 2px;
-  position: relative;
-`;
-
 const OverviewTitle = styled.p`
   color: #24292e;
   font-size: 16px;
   margin-bottom: 8px;
-`;
-
-const RepoLink = styled.a`
-  font-weight: 600;
-  font-size: 14px;
-  color: #0366d6;
-  cursor: pointer;
-`;
-
-const RepoDetails = styled.p`
-  color: #586069;
-  font-size: 12px;
-  margin: 0;
-`;
-
-const Icon = styled.i`
-  margin-left: 16px;
 `;
 
 const ProfileContainer = styled.section`

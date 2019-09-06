@@ -93,7 +93,7 @@ const ContactButton = styled.a`
   text-decoration: none;
   box-sizing: border-box;
   margin: 8px 0px;
-  hover: {
+  &:hover: {
     text-decoration: none;
   }
 `;
