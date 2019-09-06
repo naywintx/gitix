@@ -52,6 +52,26 @@ export const deleteRepositories = () => {
   return userSession.deleteFile("repositories");
 };
 
+export const putNewRepository = (repo) => {
+  return getRepositories().then(repoList => {
+    if (!repoList) {
+      repoList = [];
+    }
+    repoList.push(repo);
+    return putRepositories(repoList)
+  });
+}
+
+export const deleteRepository = (repo) => {
+  return getRepositories().then(repoList => {
+    if (!repoList) {
+      repoList = [];
+    }
+    repoList = repoList.filter(r => repo.url !== r.url);
+    return putRepositories(repoList)
+  });
+}
+
 export const getFollowing = () =>
   userSession.getFile("following").then(f => {
     let following;
@@ -92,5 +112,6 @@ export const getGithubRepos = profile => {
         });
     }
   }
+  console.log("no github account")
   return Promise.resolve();
 };

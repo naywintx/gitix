@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
-import { isUserSignedIn, getFile, putFile } from "blockstack";
 import { sampleRepos } from "./Repositories";
+import {
+  putNewRepository,
+  getGithubRepos,
+  isUserSignedIn,
+  loadUserData
+} from "../lib/blockstack";
 
 class AddRepo extends Component {
   state = {
@@ -16,14 +21,11 @@ class AddRepo extends Component {
 
   componentDidMount() {
     if (isUserSignedIn()) {
-      getFile("repositories", { decrypt: false }).then(repos => {
+      getGithubRepos(loadUserData().profile).then(repos => {
+        console.log(repos);
         if (repos) {
           this.setState({
             repos
-          });
-        } else {
-          this.setState({
-            repos: sampleRepos
           });
         }
         this.setState({ loading: false });
@@ -45,32 +47,59 @@ class AddRepo extends Component {
 
   saveRepository() {
     this.setState({ updating: true });
-    getFile("repositories", { decrypt: false }).then(repos => {
-      let repoList;
-      if (!repos) {
-        repoList = [];
-      } else {
-        repoList = JSON.parse(repos);
-      }
-      repoList.push({
-        name: this.state.name,
-        url: this.state.url,
-        description: this.state.description
-      });
-      putFile("repositories", JSON.stringify(repoList), {
-        encrypt: false
-      }).then(r => {
-        this.setState({ updating: false });
-      });
+    const newRepo = {
+      name: this.state.name,
+      url: this.state.url,
+      description: this.state.description
+    };
+
+    putNewRepository(newRepo).then(r => {
+      this.setState({ updating: false });
     });
   }
 
   render() {
-    const { loading, updating } = this.state;
+    const { loading, updating, repos } = this.state;
 
     return (
       <div>
-        <Title>Add new repository</Title>
+        <Title>Add repository</Title>
+        {repos.length > 0 && (
+          <>
+            Repo from your github acount:{" "}
+            <select
+              onChange={e => {
+                const repoUrl = e.target.value;
+                const r = this.state.repos.find(r => r.url === repoUrl);
+                if (r) {
+                  this.setState({
+                    name: r.name,
+                    url: r.url,
+                    description: r.description || ""
+                  });
+                } else {
+                  this.setState({
+                    name: "",
+                    url: "",
+                    description: ""
+                  });
+                }
+              }}
+            >
+              <option value=""></option>
+              {repos.map(r => {
+                return (
+                  <option value={r.url} key={r.url}>
+                    {r.name}
+                  </option>
+                );
+              })}
+            </select>
+          </>
+        )}
+        <h2>
+        Repository Details
+        </h2>
         <Label>Name</Label>
         <RepoName
           value={this.state.name}
@@ -128,30 +157,6 @@ const Title = styled.p`
   margin-bottom: 8px;
 `;
 
-const RepoCard = styled.div`
-  border-bottom: 1px #d1d5da solid;
-  padding: 16px;
-  margin-bottom: 16px;
-`;
-
-const SearchContainer = styled.div`
-  border-bottom: 1px solid #d1d5da;
-  padding-bottom: 16px;
-`;
-
-const SearchBox = styled.input`
-  min-height: 34px;
-  width: 300px;
-  font-size: 14px;
-  padding: 6px 8px;
-  background-color: #fff;
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  border: 1px solid #d1d5da;
-  border-radius: 3px;
-  outline: none;
-  box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
-`;
 
 const Label = styled.p`
   font-size: 12px;
@@ -160,39 +165,23 @@ const Label = styled.p`
   margin-bottom: 0;
 `;
 
-const InfoContainer = styled.div`
-  display: flex;
-`;
-
-const Circle = styled.div`
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  background: #f1e05a;
-  margin-right: 5px;
-  top: 2px;
-  position: relative;
-`;
 
 const RepoDescription = styled.textarea`
   font-size: 14px;
   color: #586069;
+  width: 460px;
 `;
 
 const RepoUrl = styled.input`
   color: #586069;
   font-size: 14px;
+  width: 460px;
 `;
 
 const RepoName = styled.input`
   color: #586069;
   font-size: 14px;
-`;
-
-const RepoDetails = styled.span`
-  color: #586069;
-  font-size: 12px;
-  margin-bottom: 0;
+  width: 460px;
 `;
 
 const ButtonIcon = styled.i``;

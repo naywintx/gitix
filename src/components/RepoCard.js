@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import moment from "moment";
 
-const RepoCard = ({ repo, className }) => {
+const RepoCard = ({ repo, className, onDelete }) => {
   let gitProviderIconUrl = "/images/git.png";
   if (repo.url) {
     if (repo.url.includes("github.com")) {
@@ -18,7 +18,9 @@ const RepoCard = ({ repo, className }) => {
   return (
     <RepoCardContainer key={repo.name} className={className}>
       <GitProviderIcon src={gitProviderIconUrl} />{" "}
-      <RepoLink href={repo.url}>{repo.name}</RepoLink>
+      <RepoLink href={repo.url} target="_blank" rel="noopener">
+        {repo.name}
+      </RepoLink>
       <RepoDescription>{repo.description}</RepoDescription>
       <RepoInfoContainer>
         <Circle />
@@ -33,6 +35,11 @@ const RepoCard = ({ repo, className }) => {
           {repo.forkCount}
         </RepoDetails>
         <Date>{moment(repo.updatedAt).fromNow()}</Date>
+        {onDelete && (
+          <DeleteButton onClick={onDelete}>
+            <ButtonIcon className="fa fa-trash" /> Remove
+          </DeleteButton>
+        )}
       </RepoInfoContainer>
     </RepoCardContainer>
   );
@@ -121,5 +128,68 @@ const Date = styled.p`
     visibility: collapse;
   }
 `;
+
+const Menu = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const MenuButton = styled.button`
+  background-color: #4caf50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  &{Menu}:hover & {
+    background-color: #3e8e41;
+  };
+`;
+const MenuItems = styled.div`
+  display: block;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  &{Menu}:hover & {
+    {display: block;}
+  }
+`;
+
+const MenuItem = styled.a`
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  &:hover {
+    background-color: #ddd;
+  }
+`;
+
+const DeleteButton = styled.a`
+  cursor: pointer;
+  border-radius: 0.25em;
+  color: black;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 3px 10px;
+  background-position: -1px -1px;
+  background-repeat: repeat-x;
+  background-size: 110% 110%;
+  border: 1px solid rgba(27, 31, 35, 0.2);
+  display: inline-block;
+  font-weight: 600;
+  position: relative;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-decoration: none;
+  box-sizing: border-box;
+  margin: 8px 0px;
+  &:hover: {
+    text-decoration: none;
+  }
+`;
+
+const ButtonIcon = styled.i``;
 
 export default RepoCard;

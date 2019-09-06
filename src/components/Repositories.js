@@ -4,7 +4,8 @@ import LoadingIndicator from "./LoadingIndicator";
 import {
   isUserSignedIn,
   getRepositories,
-  deleteRepositories
+  deleteRepositories,
+  deleteRepository
 } from "../lib/blockstack";
 import RepoCard from "./RepoCard";
 
@@ -57,6 +58,14 @@ class Repo extends Component {
     });
   };
 
+  deleteRepo = repo => {
+    deleteRepository(repo).then(() => {
+      if (window) {
+        window.location.href = window.location.origin;
+      }
+    });
+  };
+
   render() {
     const { repos, filteredRepos, filtered, loading } = this.state;
 
@@ -64,7 +73,14 @@ class Repo extends Component {
 
     const repositories = !loading ? (
       visibleRepos.map((repo, i) => {
-        return <RepoCard key={i} repo={repo} className="list" />;
+        return (
+          <RepoCard
+            key={i}
+            repo={repo}
+            className="list"
+            onDelete={this.deleteRepo}
+          />
+        );
       })
     ) : (
       <LoadingIndicator />
