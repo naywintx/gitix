@@ -11,5 +11,6 @@
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "did_authors": ["did:stack:v0:1E72AfQC47JaR3DRhwWVaRnguppAsKRCk4-0", "did:stack:v0:1Mk9gNKVdeLsodtbtUssVJmJMRHaEa2hGF-67"]
 }
