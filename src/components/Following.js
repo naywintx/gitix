@@ -18,7 +18,15 @@ const suggestedUsers = [
     name: "Larry Salibra",
     username: "larry.id",
     bio: "Building a new internet for decentralized apps!"
+  },
+  {
+    avatarUrl:
+      "https://gaia.blockstack.org/hub/19AAYhqyS33YH8zrdmyN1PmEez8ZEEPQdT/0/avatar-0",
+    name: "Dan Trevino",
+    username: "dantrevino.id",
+    bio: "Life, Liberty, and the Pursuit of Open Standards"
   }
+
 ];
 
 const toFollowingUser = (follower, i) => {
