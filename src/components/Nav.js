@@ -115,6 +115,14 @@ class Nav extends Component {
             )}
           </UserSection>
         </Header>
+        Share your public profile:{" "}
+        <ShareLink
+          href={`https://gitix.org/#/u/{username}`}
+          target="_blank"
+          rel="noopener"
+        >
+          https://gitix.org/#/u/{username}
+        </ShareLink>
       </HeaderContainer>
     );
   }
@@ -158,6 +166,11 @@ const NavItem = styled.li`
 
 const UserSection = styled.div`
   position: relative;
+`;
+
+const ShareLink = styled.a`
+  text-decoration: none;
+  color:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              #fff;
 `;
 
 const DropDownCaret = styled.span`
