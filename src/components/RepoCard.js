@@ -36,7 +36,7 @@ const RepoCard = ({ repo, className, onDelete }) => {
         </RepoDetails>
         <Date>{moment(repo.updatedAt).fromNow()}</Date>
         {onDelete && (
-          <DeleteButton onClick={onDelete}>
+          <DeleteButton onClick={() => onDelete(repo)}>
             <ButtonIcon className="fa fa-trash" /> Remove
           </DeleteButton>
         )}
