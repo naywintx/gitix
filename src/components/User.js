@@ -12,6 +12,7 @@ import {
   lookupProfile,
   putFollowing
 } from "../lib/blockstack";
+import { getUserAppFileUrl } from "blockstack";
 
 class User extends Component {
   state = {
@@ -21,7 +22,8 @@ class User extends Component {
     loadingFollowing: true,
     updating: false,
     isFollowingUser: false,
-    invalidUser: false
+    invalidUser: false,
+    contactable: false
   };
 
   componentDidMount() {
@@ -40,7 +42,14 @@ class User extends Component {
     this.setState({ loadingFollowing: true, loading: true });
     lookupProfile(username).then(
       user => {
-        this.setState({ user, invalidUser:false });
+        getUserAppFileUrl(
+          `BlockstackUser/${username}`,
+          username,
+          "https://app.dmail.online"
+        ).then((u) => {
+          this.setState({ contactable: u !== null });
+        });
+        this.setState({ user, invalidUser: false });
         getFollowing().then(following => {
           const followingUserList = following.filter(
             u => u.username === username
@@ -123,7 +132,8 @@ class User extends Component {
       updating,
       loadingFollowing,
       isFollowingUser,
-      invalidUser
+      invalidUser,
+      contactable
     } = this.state;
 
     console.log({ repos: repositories });
@@ -158,7 +168,7 @@ class User extends Component {
           company={company}
           bio={bio}
           organizations={organizations}
-          contactable={username !== loadUserData().username && !invalidUser}
+          contactable={contactable}
         />
 
         <div>
