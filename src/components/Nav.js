@@ -117,11 +117,11 @@ class Nav extends Component {
         </Header>
         Share your public profile:{" "}
         <ShareLink
-          href={`https://gitix.org/#/u/{username}`}
+          href={`${process.env.PUBLIC_URL}/#/u/${username}`}
           target="_blank"
           rel="noopener"
         >
-          https://gitix.org/#/u/{username}
+          {process.env.PUBLIC_URL}/#/u/{username}
         </ShareLink>
       </HeaderContainer>
     );
