@@ -3,36 +3,42 @@ import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
 
 const Followers = () => {
+  const [loading, setLoading] = useState(false);
   const [followerList] = useState([]);
 
-  const followers = followerList ? (
-    followerList.map((follower, i) => {
-      return (
-        <FollowersCard key={i}>
-          <FollowersContainer>
-            <FollowersImage src={follower.avatarUrl} />
-            <FollowersInfoContainer>
-              <FollowersName>
-                <FollowerName>{follower.name}</FollowerName>
-                <FollowerLogin>{follower.login}</FollowerLogin>
-              </FollowersName>
-              <FollowerBio>{follower.bio}</FollowerBio>
-              {follower.location && (
-                <div>
-                  <Icon className="fa fa-map-marker" />
-                  <FollowerLocation>{follower.location}</FollowerLocation>
-                </div>
-              )}
-            </FollowersInfoContainer>
-          </FollowersContainer>
-        </FollowersCard>
-      );
-    })
-  ) : (
-    <LoadingIndicator />
+  const followers =
+    followerList.length > 0 ? (
+      followerList.map((follower, i) => {
+        return (
+          <FollowersCard key={i}>
+            <FollowersContainer>
+              <FollowersImage src={follower.avatarUrl} />
+              <FollowersInfoContainer>
+                <FollowersName>
+                  <FollowerName>{follower.name}</FollowerName>
+                  <FollowerLogin>{follower.login}</FollowerLogin>
+                </FollowersName>
+                <FollowerBio>{follower.bio}</FollowerBio>
+                {follower.location && (
+                  <div>
+                    <Icon className="fa fa-map-marker" />
+                    <FollowerLocation>{follower.location}</FollowerLocation>
+                  </div>
+                )}
+              </FollowersInfoContainer>
+            </FollowersContainer>
+          </FollowersCard>
+        );
+      })
+    ) : (
+      <div>Coming soon</div>
+    );
+  return (
+    <>
+      {loading && <LoadingIndicator />}
+      {!loading && <section>{followers}</section>}
+    </>
   );
-
-  return <section>{followers}</section>;
 };
 
 const Icon = styled.i`
