@@ -55,11 +55,11 @@ class Overview extends Component {
 
     return (
       <div>
-        {repos.length > 1 && (
-          <OverviewTitle>Popular Repositories</OverviewTitle>
+        <OverviewTitle>Popular Repositories</OverviewTitle>
+        {repos.length > 1 && <RepoContainer>{repos}</RepoContainer>}
+        {repos.length === 0 && (
+          <a href="/#/repositories/add">Add your first repo</a>
         )}
-        <RepoContainer>{repos}</RepoContainer>
-
         <CalendarContainer>
           <div className="calendar" />
         </CalendarContainer>

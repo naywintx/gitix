@@ -86,7 +86,7 @@ class AddRepo extends Component {
                 }
               }}
             >
-              <option value=""></option>
+              <option value="">(select repo)</option>
               {repos.map(r => {
                 return (
                   <option value={r.url} key={r.url}>

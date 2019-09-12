@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
-import { getFile } from "blockstack";
+import { getFile, loadUserData } from "blockstack";
 import { NavLink } from "react-router-dom";
 
 const suggestedUsers = [
@@ -11,6 +11,13 @@ const suggestedUsers = [
     name: "Friedger Müffke",
     username: "friedger.id",
     bio: "Entredeveloper in Europe"
+  },
+  {
+    avatarUrl:
+      "https://gaia.blockstack.org/hub/1fHF3QADKT62js8BqHXmF31CFA1KUcTud/0//avatar-0",
+    name: "Larry Salibra",
+    username: "larry.id",
+    bio: "Building a new internet for decentralized apps!"
   }
 ];
 
@@ -42,11 +49,12 @@ const toFollowingUser = (follower, i) => {
 
 const Following = () => {
   const [loading, setLoading] = useState(false);
-
   const [following, setFollowing] = useState([]);
-
+  const [suggestedFollowers, setSuggestedFollowers] = useState(suggestedUsers);
   useEffect(() => {
     setLoading(true);
+    const name = loadUserData().username || "";
+
     getFile("following").then(f => {
       let followingUsers;
       if (f) {
@@ -55,6 +63,15 @@ const Following = () => {
         followingUsers = [];
       }
       setFollowing(followingUsers);
+
+      setSuggestedFollowers(
+        suggestedUsers.filter(
+          u =>
+            u.username !== name &&
+            followingUsers.filter(fu => fu.username === u.username).length === 0
+        )
+      );
+
       setLoading(false);
     });
   }, []);
@@ -68,8 +85,12 @@ const Following = () => {
   return (
     <>
       <section>{follow}</section>
-      <Title>Users you might want to follow</Title>
-      <section>{suggestedUsers.map(toFollowingUser)}</section>
+      {suggestedFollowers.length > 0 && (
+        <>
+          <Title>Users you might want to follow</Title>
+          <section>{suggestedFollowers.map(toFollowingUser)}</section>
+        </>
+      )}
     </>
   );
 };
