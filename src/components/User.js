@@ -20,23 +20,37 @@ class User extends Component {
     loading: true,
     loadingFollowing: true,
     updating: false,
-    isFollowingUser: false
+    isFollowingUser: false,
+    invalidUser: false
   };
 
   componentDidMount() {
     if (isUserSignedIn()) {
-      lookupProfile(this.props.match.params.user).then(user => {
+      this.updateUser(this.props.match.params.user);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.user !== prevProps.match.params.user) {
+      this.updateUser();
+    }
+  }
+
+  updateUser(username) {
+    lookupProfile(username).then(
+      user => {
         this.setState({ user });
+        this.setState({ loadingFollowing: true, loading: true });
         getFollowing().then(following => {
           const followingUserList = following.filter(
-            u => u.username === this.props.match.params.user
+            u => u.username === username
           );
           this.setState({
             loadingFollowing: false,
             isFollowingUser: followingUserList.length > 0
           });
         });
-        getRepositories(this.props.match.params.user)
+        getRepositories(username)
           .then(repositories => {
             console.log({ repositories });
             if (repositories) {
@@ -56,8 +70,19 @@ class User extends Component {
             console.log(e.message);
             this.setState({ loading: false });
           });
-      });
-    }
+      },
+      error => {
+        console.log({ error });
+        this.setState({
+          user: {
+            name: "Invalid username"
+          },
+          loadingFollowing: false,
+          loading: false,
+          invalidUser: true
+        });
+      }
+    );
   }
 
   followUser() {
@@ -97,7 +122,8 @@ class User extends Component {
       loading,
       updating,
       loadingFollowing,
-      isFollowingUser
+      isFollowingUser,
+      invalidUser
     } = this.state;
 
     console.log({ repos: repositories });
@@ -132,22 +158,22 @@ class User extends Component {
           company={company}
           bio={bio}
           organizations={organizations}
-          contactable={username !== loadUserData().username}
+          contactable={username !== loadUserData().username && !invalidUser}
         />
 
         <div>
-          {!loadingFollowing && !isFollowingUser && (
+          {!loadingFollowing && !isFollowingUser && !invalidUser && (
             <FollowButton onClick={() => this.followUser()}>
               <ButtonIcon className="fa fa-user" /> Follow
             </FollowButton>
           )}
-          {!loadingFollowing && isFollowingUser && (
+          {!loadingFollowing && isFollowingUser && !invalidUser && (
             <UnfollowButton onClick={() => this.unfollowUser()}>
               <ButtonIcon className="fa fa-user" /> Unfollow
             </UnfollowButton>
           )}
           {(loading || updating) && <LoadingIndicator />}
-          {!loading && (
+          {!loading && !invalidUser && (
             <InformationContainer>
               <div>
                 {repos.length > 1 && (
