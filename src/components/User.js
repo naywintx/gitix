@@ -32,15 +32,15 @@ class User extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.match.params.user !== prevProps.match.params.user) {
-      this.updateUser();
+      this.updateUser(this.props.match.params.user);
     }
   }
 
   updateUser(username) {
+    this.setState({ loadingFollowing: true, loading: true });
     lookupProfile(username).then(
       user => {
-        this.setState({ user });
-        this.setState({ loadingFollowing: true, loading: true });
+        this.setState({ user, invalidUser:false });
         getFollowing().then(following => {
           const followingUserList = following.filter(
             u => u.username === username
@@ -72,7 +72,7 @@ class User extends Component {
           });
       },
       error => {
-        console.log({ error });
+        console.log({ error, invalid: "invalidUser" });
         this.setState({
           user: {
             name: "Invalid username"
