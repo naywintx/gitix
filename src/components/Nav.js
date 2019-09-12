@@ -121,7 +121,7 @@ class Nav extends Component {
           target="_blank"
           rel="noopener"
         >
-          {process.env.PUBLIC_URL}/#/u/{username}
+          https://app.gitix.org/#/u/{username}
         </ShareLink>
       </HeaderContainer>
     );
