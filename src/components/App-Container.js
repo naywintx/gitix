@@ -16,6 +16,7 @@ import Stars from "./Stars";
 import User from "./User";
 
 import { isUserSignedIn, loadUserData } from "blockstack";
+import LoginScreen from "./LoginScreen";
 
 const Home = ({
   avatarUrl,
@@ -112,6 +113,10 @@ class App extends Component {
       <section>
         <Nav avatarUrl={avatarUrl} username={username} />
         <Switch>
+          <Route
+            path={`${process.env.PUBLIC_URL}/login`}
+            component={LoginScreen}
+          />
           <Route path={`${process.env.PUBLIC_URL}/issues`} component={Issues} />
           <Route
             path={`${process.env.PUBLIC_URL}/pullrequests`}

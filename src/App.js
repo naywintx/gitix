@@ -1,63 +1,34 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import LoginScreen from "./components/LoginScreen";
 import AppContainer from "./components/App-Container";
 import { withRouter } from "react-router-dom";
-import { Loading } from "gitstar-components";
-import {
-  isSignInPending,
-  handlePendingSignIn,
-  isUserSignedIn
-} from "blockstack";
+import { checkIsSignedIn, loadUserData } from "./lib/blockstack";
 
-const STATUS = {
-  INITIAL: "initial",
-  LOADING: "loading",
-  FINISHED_LOADING: "finished_loading",
-  AUTHENTICATED: "authenticated"
+const NotSignedIn = {
+  checking: false,
+  user: null,
+  isSignedIn: false
 };
+export const UserStateContext = React.createContext(NotSignedIn);
 
-class App extends Component {
-  state = {
-    status: STATUS.INITIAL
-  };
+const App = () => {
+  const [signIn, setSignIn] = useState({ ...NotSignedIn, checking: true });
 
-  componentDidMount() {
-    if (isSignInPending()) {
-      handlePendingSignIn().then(() => {
-        if (window) {
-          window.location.href = window.location.origin;
-        }
-        this.setState({
-          status: STATUS.AUTHENTICATED
-        });
-      });
-    } else if (isUserSignedIn()) {
-      this.setState({
-        status: STATUS.AUTHENTICATED
-      });
-    }
-  }
-  render() {
-    return (
-      <section>
-        {this.state.status === STATUS.AUTHENTICATED && <AppContainer />}
-
-        <header>
-          {this.state.status === STATUS.INITIAL && <LoginScreen />}
-        </header>
-        <Loading
-          status={this.state.status}
-          callback={() => {
-            if (this.props.status !== STATUS.AUTHENTICATED) {
-              this.setState({
-                status: STATUS.AUTHENTICATED
-              });
-            }
-          }}
-        />
-      </section>
-    );
-  }
-}
+  useEffect(() => {
+    checkIsSignedIn().then(signedIn => {
+      if (signedIn) {
+        setSignIn({ checking: false, user: loadUserData(), isSignedIn: true });
+      } else {
+        setSignIn(NotSignedIn);
+      }
+    });
+  }, []);
+  return (
+    <UserStateContext.Provider value={signIn}>
+      {signIn.isSignedIn && <AppContainer />}
+      {!signIn.isSignedIn && <LoginScreen />}
+    </UserStateContext.Provider>
+  );
+};
 
 export default withRouter(App);

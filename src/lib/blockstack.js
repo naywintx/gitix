@@ -1,11 +1,95 @@
-import { UserSession, lookupProfile as bsLookupProfile } from "blockstack";
+import { UserSession, AppConfig, lookupProfile as bsLookupProfile } from "blockstack";
+import { configure, getConfig, User, GroupMembership } from "radiks";
+import { RADIKS_SERVER_URL } from "../components/constants";
 import { sampleRepos } from "../components/Repositories";
 
-export const userSession = new UserSession();
+const appConfig = new AppConfig(
+  ["store_write"],
+  typeof window !== "undefined"
+    ? window.location.origin
+    : "http://localhost:8000",
+  typeof window !== "undefined"
+    ? "/"
+    : window.location.pathname + window.location.search + window.location.hash,
+  "/manifest.json"
+);
+const userSession = new UserSession({ appConfig });
 
-export const isUserSignedIn = () => userSession.isUserSignedIn();
+configure({
+  apiServer: RADIKS_SERVER_URL,
+  userSession
+});
 
-export const loadUserData = () => userSession.loadUserData();
+export const isBrowser = () => typeof window !== "undefined";
+
+export const loadUserData = () => {
+  const { userSession } = getConfig();
+  return isBrowser() && userSession.isUserSignedIn()
+    ? userSession.loadUserData()
+    : {};
+};
+
+export const isUserSignedIn = () => {
+  const { userSession } = getConfig();
+  return isBrowser() && userSession.isUserSignedIn();
+};
+
+export const handleLogin = callback => {
+  const { userSession } = getConfig();
+
+  if (userSession.isUserSignedIn()) {
+    callback(loadUserData());
+  } else if (userSession.isSignInPending()) {
+    userSession.handlePendingSignIn().then(userData => {
+      User.createWithCurrentUser().then(() => {
+        callback(userData);
+      });
+    });
+  } else {
+    userSession.redirectToSignIn();
+  }
+};
+
+export const redirectToSignIn = redirectUri => {
+  const { userSession } = getConfig();
+  userSession.redirectToSignIn(redirectUri);
+};
+
+export const checkIsSignedIn = () => {
+  if (!isBrowser()) {
+    return Promise.resolve(false);
+  }
+  const { userSession } = getConfig();
+  if (userSession.isUserSignedIn()) {
+    return Promise.resolve(true);
+  } else if (userSession.isSignInPending()) {
+    return userSession.handlePendingSignIn().then(() => {
+      return User.createWithCurrentUser().then(() => {
+        window.history.replaceState(
+          "",
+          document.title,
+          window.location.pathname
+        );
+        return true;
+      });
+    });
+  } else {
+    return Promise.resolve(false);
+  }
+};
+
+export const logout = callback => {
+  const { userSession } = getConfig();
+  GroupMembership.clearStorage();
+  userSession.signUserOut("/");
+  callback();
+};
+
+export const encryptContent = message => {
+  const { userSession } = getConfig();
+  console.log("encrypting " + message);
+  return userSession.encryptContent(message);
+};
 
 export const lookupProfile = username => bsLookupProfile(username);
 
@@ -52,25 +136,25 @@ export const deleteRepositories = () => {
   return userSession.deleteFile("repositories");
 };
 
-export const putNewRepository = (repo) => {
+export const putNewRepository = repo => {
   return getRepositories().then(repoList => {
     if (!repoList) {
       repoList = [];
     }
     repoList.push(repo);
-    return putRepositories(repoList)
+    return putRepositories(repoList);
   });
-}
+};
 
-export const deleteRepository = (repo) => {
+export const deleteRepository = repo => {
   return getRepositories().then(repoList => {
     if (!repoList) {
       repoList = [];
     }
     repoList = repoList.filter(r => repo.url !== r.url);
-    return putRepositories(repoList)
+    return putRepositories(repoList);
   });
-}
+};
 
 export const getFollowing = () =>
   userSession.getFile("following").then(f => {
@@ -92,9 +176,7 @@ export const getGithubRepos = profile => {
 
     if (githubAccounts.length > 0) {
       return fetch(
-        `https://api.github.com/users/${
-          githubAccounts[0].identifier
-        }/repos?sort=pushed`
+        `https://api.github.com/users/${githubAccounts[0].identifier}/repos?sort=pushed`
       )
         .then(response => response.json())
         .then(githubRepos => {
@@ -112,6 +194,6 @@ export const getGithubRepos = profile => {
         });
     }
   }
-  console.log("no github account")
+  console.log("no github account");
   return Promise.resolve();
 };
