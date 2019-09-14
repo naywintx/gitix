@@ -3,12 +3,12 @@ import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
 import Profile from "./Profile";
 import RepoCard from "./RepoCard";
+import { Helmet } from "react-helmet";
 import {
   getGithubRepos,
   getRepositories,
   getFollowing,
   isUserSignedIn,
-  loadUserData,
   lookupProfile,
   putFollowing
 } from "../lib/blockstack";
@@ -170,8 +170,27 @@ class User extends Component {
     const company = null;
     const bio = user.description;
     const organizations = [];
+    const title = `${userFullName} | Gitix Profile`;
+    const metaDescription = `All the git repositories publised by ${userFullName}`;
+
     return (
       <ProfileContainer>
+        <Helmet>
+          <title>{userFullName}</title>
+          <link
+            rel="canonical"
+            href={`https://app.gitix.org/#/u/${username}`}
+          />
+          <meta name="description" content={metaDescription} />
+          <meta name="og:title" content={title} />
+          <meta name="og:description" content={metaDescription} />
+          <meta name="og:type" content="website" />
+          <meta name="og:image" content={avatarUrl} />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:creator" content="gitix.org" />
+          <meta name="twitter:title" content={title} />
+          <meta name="twitter:description" content={metaDescription} />
+        </Helmet>
         <Profile
           avatarUrl={avatarUrl}
           userFullName={userFullName}

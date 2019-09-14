@@ -7,7 +7,6 @@ import {
   getRepositories,
   putRepositories,
   isUserSignedIn,
-  loadUserData,
   getGithubRepos
 } from "../lib/blockstack";
 
@@ -19,7 +18,7 @@ class Overview extends Component {
         if (repositories) {
           this.setState({ repositories });
         } else {
-          const user = loadUserData();
+          //const user = loadUserData();
           //this.addGithubRepos(user.profile);
         }
       });

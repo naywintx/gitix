@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import LoginScreen from "./components/LoginScreen";
 import AppContainer from "./components/App-Container";
 import { withRouter } from "react-router-dom";
 import { checkIsSignedIn, loadUserData } from "./lib/blockstack";
