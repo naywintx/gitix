@@ -25,8 +25,7 @@ const App = () => {
   }, []);
   return (
     <UserStateContext.Provider value={signIn}>
-      {signIn.isSignedIn && <AppContainer />}
-      {!signIn.isSignedIn && <LoginScreen />}
+      <AppContainer />
     </UserStateContext.Provider>
   );
 };

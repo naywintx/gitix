@@ -17,6 +17,7 @@ import User from "./User";
 
 import { isUserSignedIn, loadUserData } from "blockstack";
 import LoginScreen from "./LoginScreen";
+import { UserStateContext } from "../App";
 
 const Home = ({
   avatarUrl,
@@ -110,39 +111,51 @@ class App extends Component {
     const organizations = viewer ? viewer.organizations : {};
 
     return (
-      <section>
-        <Nav avatarUrl={avatarUrl} username={username} />
-        <Switch>
-          <Route
-            path={`${process.env.PUBLIC_URL}/login`}
-            component={LoginScreen}
-          />
-          <Route path={`${process.env.PUBLIC_URL}/issues`} component={Issues} />
-          <Route
-            path={`${process.env.PUBLIC_URL}/pullrequests`}
-            component={PullRequests}
-          />
-          <Route
-            exact
-            path={`${process.env.PUBLIC_URL}/u/:user`}
-            component={User}
-          />
-          <Route
-            path={`${process.env.PUBLIC_URL}/`}
-            render={() => (
-              <Home
-                avatarUrl={avatarUrl}
-                userFullName={userFullName}
-                username={username}
-                location={location}
-                company={company}
-                bio={bio}
-                organizations={organizations}
+      <UserStateContext.Consumer>
+        {signIn => (
+          <section>
+            <Nav avatarUrl={avatarUrl} username={username} />
+            <Switch>
+              <Route
+                path={`${process.env.PUBLIC_URL}/login`}
+                component={LoginScreen}
               />
-            )}
-          />
-        </Switch>
-      </section>
+              <Route
+                path={`${process.env.PUBLIC_URL}/issues`}
+                component={Issues}
+              />
+              <Route
+                path={`${process.env.PUBLIC_URL}/pullrequests`}
+                component={PullRequests}
+              />
+              <Route
+                exact
+                path={`${process.env.PUBLIC_URL}/u/:user`}
+                component={User}
+              />
+              <Route
+                path={`${process.env.PUBLIC_URL}/`}
+                render={() => (
+                  <>
+                    {signIn.isSignedIn && (
+                      <Home
+                        avatarUrl={avatarUrl}
+                        userFullName={userFullName}
+                        username={username}
+                        location={location}
+                        company={company}
+                        bio={bio}
+                        organizations={organizations}
+                      />
+                    )}
+                    {!signIn.isSignedIn && <LoginScreen />}
+                  </>
+                )}
+              />
+            </Switch>
+          </section>
+        )}
+      </UserStateContext.Consumer>
     );
   }
 }

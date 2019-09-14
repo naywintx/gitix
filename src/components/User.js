@@ -12,7 +12,7 @@ import {
   lookupProfile,
   putFollowing
 } from "../lib/blockstack";
-import { getUserAppFileUrl } from "blockstack";
+import { getUserAppFileUrl, UserSession } from "blockstack";
 
 class User extends Component {
   state = {
@@ -25,11 +25,10 @@ class User extends Component {
     invalidUser: false,
     contactable: false
   };
+  userSession = new UserSession();
 
   componentDidMount() {
-    if (isUserSignedIn()) {
-      this.updateUser(this.props.match.params.user);
-    }
+    this.updateUser(this.props.match.params.user);
   }
 
   componentDidUpdate(prevProps) {
@@ -39,26 +38,38 @@ class User extends Component {
   }
 
   updateUser(username) {
-    this.setState({ loadingFollowing: true, loading: true });
+    this.setState({
+      loadingFollowing: true,
+      loading: true,
+      isUserSignedIn: isUserSignedIn()
+    });
     lookupProfile(username).then(
       user => {
         getUserAppFileUrl(
           `BlockstackUser/${username}`,
           username,
           "https://app.dmail.online"
-        ).then((u) => {
+        ).then(u => {
           this.setState({ contactable: u !== null });
         });
         this.setState({ user, invalidUser: false });
-        getFollowing().then(following => {
-          const followingUserList = following.filter(
-            u => u.username === username
-          );
+        if (isUserSignedIn()) {
+          getFollowing().then(following => {
+            const followingUserList = following.filter(
+              u => u.username === username
+            );
+            this.setState({
+              loadingFollowing: false,
+              isFollowingUser: followingUserList.length > 0
+            });
+          });
+        } else {
           this.setState({
             loadingFollowing: false,
-            isFollowingUser: followingUserList.length > 0
+            isFollowingUser: false
           });
-        });
+        }
+
         getRepositories(username)
           .then(repositories => {
             console.log({ repositories });
@@ -133,7 +144,8 @@ class User extends Component {
       loadingFollowing,
       isFollowingUser,
       invalidUser,
-      contactable
+      contactable,
+      isUserSignedIn
     } = this.state;
 
     console.log({ repos: repositories });
@@ -172,16 +184,22 @@ class User extends Component {
         />
 
         <div>
-          {!loadingFollowing && !isFollowingUser && !invalidUser && (
-            <FollowButton onClick={() => this.followUser()}>
-              <ButtonIcon className="fa fa-user" /> Follow
-            </FollowButton>
-          )}
-          {!loadingFollowing && isFollowingUser && !invalidUser && (
-            <UnfollowButton onClick={() => this.unfollowUser()}>
-              <ButtonIcon className="fa fa-user" /> Unfollow
-            </UnfollowButton>
-          )}
+          {!loadingFollowing &&
+            !isFollowingUser &&
+            !invalidUser &&
+            isUserSignedIn && (
+              <FollowButton onClick={() => this.followUser()}>
+                <ButtonIcon className="fa fa-user" /> Follow
+              </FollowButton>
+            )}
+          {!loadingFollowing &&
+            isFollowingUser &&
+            !invalidUser &&
+            isUserSignedIn && (
+              <UnfollowButton onClick={() => this.unfollowUser()}>
+                <ButtonIcon className="fa fa-user" /> Unfollow
+              </UnfollowButton>
+            )}
           {(loading || updating) && <LoadingIndicator />}
           {!loading && !invalidUser && (
             <InformationContainer>
