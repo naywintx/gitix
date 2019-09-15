@@ -21,7 +21,9 @@ const Profile = ({
   return (
     <ProfileSection>
       {avatarUrl && avatarUrl !== "" ? (
-        <ProfilePic src={avatarUrl} />
+        <ProfilePicContainer>
+          <ProfilePic src={avatarUrl} />
+        </ProfilePicContainer>
       ) : (
         <Placeholder />
       )}
@@ -102,6 +104,7 @@ const ButtonIcon = styled.i``;
 
 const ProfileSection = styled.section`
   padding-right: 20px;
+  padding-left: 20px;
 `;
 
 const NameSection = styled.div`
@@ -147,10 +150,20 @@ const UsersName = styled.p`
   margin: 0;
 `;
 
+const ProfilePicContainer = styled.div`
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  @media (min-width: 768px) {
+    width: 230px;
+  }
+`;
+
 const ProfilePic = styled.img`
   border-radius: 6px;
-  height: 230px;
-  width: 230px;
+  width: 100%;
+  max-width: 230px;
 `;
 
 const Placeholder = styled.div`

@@ -15,7 +15,7 @@ import Issues from "./Issues";
 import Stars from "./Stars";
 import User from "./User";
 
-import { isUserSignedIn, loadUserData } from "blockstack";
+import { isUserSignedIn, loadUserData } from "../lib/blockstack";
 import LoginScreen from "./LoginScreen";
 import { UserStateContext } from "../App";
 
@@ -161,13 +161,17 @@ class App extends Component {
 }
 
 const ProfileContainer = styled.section`
-  display: flex;
   max-width: 1012px;
   margin: 0 auto;
+  display: block;
+  @media (min-width: 768px) {
+    display: flex;
+  }
 `;
 
 const InformationContainer = styled.section`
   margin-top: 24px;
+  padding: 0px 20px;
 `;
 
 export default App;

@@ -304,9 +304,12 @@ const OverviewTitle = styled.p`
 `;
 
 const ProfileContainer = styled.section`
-  display: flex;
   max-width: 1012px;
   margin: 0 auto;
+  display: block;
+  @media (min-width: 768px) {
+    display: flex;
+  }
 `;
 
 const InformationContainer = styled.section`
