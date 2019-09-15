@@ -164,7 +164,6 @@ const ProfileContainer = styled.section`
   display: flex;
   max-width: 1012px;
   margin: 0 auto;
-  height: 100px;
 `;
 
 const InformationContainer = styled.section`

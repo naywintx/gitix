@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import UserMenu from "./UserMenu";
 import Avatar from "./Avatar";
+import LoginView from "./LoginView";
 import { UserStateContext } from "../App";
 
 const activeStyles = () => ({
@@ -128,6 +129,7 @@ class Nav extends Component {
                   )}
                 </UserSection>
               )}
+              {!signIn.isSignedIn && <LoginView />}
             </Header>
             {signIn.isSignedIn && (
               <>
@@ -155,13 +157,15 @@ const HeaderContainer = styled.section`
   position: relative;
 `;
 
-const Header = styled.header`
+const Header = styled.div`
   max-width: 1012px;
   margin: 0 auto;
-  display: flex;
   padding-top: 12px;
   padding-bottom: 12px;
   align-items: center;
+  @media (min-width: 768px) {
+    display: flex;
+  }
 `;
 
 const Logo = styled.svg`
@@ -170,6 +174,10 @@ const Logo = styled.svg`
 
 const NavContainer = styled.div`
   display: flex;
+  justify-content: center;
+  @media (min-width: 768px) {
+    justify-content: inherit;
+  }
 `;
 
 const NavItem = styled.li`
