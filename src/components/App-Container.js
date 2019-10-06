@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Route, Switch } from "react-router-dom";
+import { useBlockstack } from "react-blockstack";
 
 import Nav from "./Nav";
 import Profile from "./Profile";
@@ -15,9 +16,7 @@ import Issues from "./Issues";
 import Stars from "./Stars";
 import User from "./User";
 
-import { isUserSignedIn, loadUserData } from "../lib/blockstack";
 import LoginScreen from "./LoginScreen";
-import { UserStateContext } from "../App";
 
 const Home = ({
   avatarUrl,
@@ -73,11 +72,12 @@ const Home = ({
   );
 };
 
-class App extends Component {
-  state = { viewer: null };
-  componentDidMount() {
-    if (isUserSignedIn()) {
-      const user = loadUserData();
+function App (props) {
+  const [state, setState] = useState({ viewer: null });
+  const { userData } = useBlockstack();
+  useEffect( () => {
+    if (userData) {
+      const user = userData;
       const avatarUrl =
         user.profile &&
         user.profile.image &&
@@ -86,7 +86,7 @@ class App extends Component {
       const username = user.username || user.identityAddress;
       const userFullName = user.profile && user.profile.name;
       const bio = user.profile && user.profile.description;
-      this.setState({
+      setState({
         viewer: {
           avatarUrl,
           userFullName,
@@ -98,9 +98,9 @@ class App extends Component {
         }
       });
     }
-  }
-  render() {
-    const { viewer } = this.state;
+  }, [userData])
+
+    const { viewer } = state;
 
     const avatarUrl = viewer ? viewer.avatarUrl : "";
     const userFullName = viewer ? viewer.userFullName : "";
@@ -111,8 +111,6 @@ class App extends Component {
     const organizations = viewer ? viewer.organizations : {};
 
     return (
-      <UserStateContext.Consumer>
-        {signIn => (
           <section>
             <Nav avatarUrl={avatarUrl} username={username} />
             <Switch>
@@ -137,7 +135,7 @@ class App extends Component {
                 path={`${process.env.PUBLIC_URL}/`}
                 render={() => (
                   <>
-                    {signIn.isSignedIn && (
+                    {viewer && (
                       <Home
                         avatarUrl={avatarUrl}
                         userFullName={userFullName}
@@ -148,16 +146,13 @@ class App extends Component {
                         organizations={organizations}
                       />
                     )}
-                    {!signIn.isSignedIn && <LoginScreen />}
+                    {!userData && <LoginScreen />}
                   </>
                 )}
               />
             </Switch>
           </section>
-        )}
-      </UserStateContext.Consumer>
-    );
-  }
+        )
 }
 
 const ProfileContainer = styled.section`
