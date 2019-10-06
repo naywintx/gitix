@@ -2,15 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import { AppConfig, UserSession } from "blockstack";
 import { BlockstackButton } from "react-blockstack-button";
+import { useBlockstack } from "react-blockstack";
+
 const LoginScreen = () => {
-  const login = () => {
-    const appConfig = new AppConfig(["store_write", "publish_data"]);
-    const userSession = new UserSession({ appConfig });
-    userSession.redirectToSignIn();
-  };
+  const { signIn } = useBlockstack()
   return (
     <LoginContainer>
-        <BlockstackButton variant="light" onClick={login} />
+        <BlockstackButton variant="light" onClick={signIn} />
     </LoginContainer>
   );
 };

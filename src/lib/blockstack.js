@@ -1,10 +1,11 @@
 import { UserSession, AppConfig, lookupProfile as bsLookupProfile } from "blockstack";
 import { configure, getConfig, User, GroupMembership } from "radiks";
+import { initBlockstack } from "react-blockstack";
 import { RADIKS_SERVER_URL } from "../components/constants";
 import { sampleRepos } from "../components/Repositories";
 
 const appConfig = new AppConfig(
-  ["store_write"],
+  ["store_write", "publish_data"],
   typeof window !== "undefined"
     ? window.location.origin
     : "http://localhost:8000",
@@ -13,7 +14,8 @@ const appConfig = new AppConfig(
     : window.location.pathname + window.location.search + window.location.hash,
   "/manifest.json"
 );
-const userSession = new UserSession({ appConfig });
+
+const { userSession } = initBlockstack({ appConfig });
 
 configure({
   apiServer: RADIKS_SERVER_URL,
