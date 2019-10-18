@@ -11,6 +11,7 @@
     "moment": "^2.21.0",
     "radiks": "^0.3.0-beta.1",
     "react": "^16.8.6",
+    "react-blockstack": "^0.5.7",
     "react-blockstack-button": "^0.1.0",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",

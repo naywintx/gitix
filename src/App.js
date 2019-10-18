@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import AppContainer from "./components/App-Container";
 import { withRouter } from "react-router-dom";
-import { checkIsSignedIn, loadUserData } from "./lib/blockstack";
+import { useBlockstack } from "react-blockstack";
+import { checkIsSignedIn } from "./lib/blockstack";
 import { Helmet } from "react-helmet";
+
 const NotSignedIn = {
   checking: false,
   user: null,
@@ -12,16 +14,16 @@ export const UserStateContext = React.createContext(NotSignedIn);
 
 const App = () => {
   const [signIn, setSignIn] = useState({ ...NotSignedIn, checking: true });
+  const { userData } = useBlockstack()
 
   useEffect(() => {
-    checkIsSignedIn().then(signedIn => {
-      if (signedIn) {
-        setSignIn({ checking: false, user: loadUserData(), isSignedIn: true });
+      if (userData) {
+        setSignIn({ checking: false, user: userData, isSignedIn: true });
       } else {
         setSignIn(NotSignedIn);
       }
-    });
-  }, []);
+  }, [userData]);
+
   const title = "gitix.org";
   const metaDescription = "Decentralized git profiles";
   const img = "https://app.gitix.org/favicon.ico";
