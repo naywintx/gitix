@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import LoadingIndicator from "./LoadingIndicator";
 
 const Followers = () => {
-  const [loading, setLoading] = useState(false);
   const [followerList] = useState([]);
 
   const followers =
@@ -35,8 +33,7 @@ const Followers = () => {
     );
   return (
     <>
-      {loading && <LoadingIndicator />}
-      {!loading && <section>{followers}</section>}
+      <section>{followers}</section>}
     </>
   );
 };

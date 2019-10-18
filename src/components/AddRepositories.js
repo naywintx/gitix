@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
-import { sampleRepos } from "./Repositories";
 import {
   putNewRepository,
   getGithubRepos,
@@ -55,6 +54,7 @@ class AddRepo extends Component {
 
     putNewRepository(newRepo).then(r => {
       this.setState({ updating: false });
+      window.location.href = window.location.origin;
     });
   }
 
@@ -97,9 +97,7 @@ class AddRepo extends Component {
             </select>
           </>
         )}
-        <h2>
-        Repository Details
-        </h2>
+        <h2>Repository Details</h2>
         <Label>Name</Label>
         <RepoName
           value={this.state.name}
@@ -157,14 +155,12 @@ const Title = styled.p`
   margin-bottom: 8px;
 `;
 
-
 const Label = styled.p`
   font-size: 12px;
   color: #586069;
   margin-left: 10px;
   margin-bottom: 0;
 `;
-
 
 const RepoDescription = styled.textarea`
   font-size: 14px;
@@ -185,9 +181,5 @@ const RepoName = styled.input`
 `;
 
 const ButtonIcon = styled.i``;
-
-const Icon = styled.i`
-  margin-left: 16px;
-`;
 
 export default AddRepo;
