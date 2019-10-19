@@ -18,7 +18,7 @@ const RepoCard = ({ repo, className, onDelete }) => {
   return (
     <RepoCardContainer key={repo.name} className={className}>
       <GitProviderIcon src={gitProviderIconUrl} />{" "}
-      <RepoLink href={repo.url} target="_blank" rel="noopener">
+      <RepoLink href={repo.url} target="_blank" rel="noopener noreferrer">
         {repo.name}
       </RepoLink>
       <RepoDescription>{repo.description}</RepoDescription>

@@ -1,4 +1,4 @@
-import { UserSession, AppConfig, lookupProfile as bsLookupProfile } from "blockstack";
+import { AppConfig, lookupProfile as bsLookupProfile } from "blockstack";
 import { configure, getConfig, User, GroupMembership } from "radiks";
 import { initBlockstack } from "react-blockstack";
 import { RADIKS_SERVER_URL } from "../components/constants";

@@ -9,10 +9,10 @@ class UserAvatar extends React.Component {
     if (isUserSignedIn()) {
       const user = loadUserData();
       const avatarUrl =
-        user.profile &&
+        (user.profile &&
         user.profile.image &&
         user.profile.image.length > 0 &&
-        user.profile.image[0].contentUrl;
+        user.profile.image[0].contentUrl) || "/images/user.png"
       this.setState({
         loading: false,
         error: null,

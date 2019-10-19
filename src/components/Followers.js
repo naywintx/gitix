@@ -33,7 +33,7 @@ const Followers = () => {
     );
   return (
     <>
-      <section>{followers}</section>}
+      <section>{followers}</section>
     </>
   );
 };

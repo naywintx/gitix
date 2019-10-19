@@ -21,7 +21,7 @@ const UserMenu = ({ username, id, closeMenu, history }) => (
       <DropDownItem>Your Stars</DropDownItem>
     </NavLink>
     <DropDownDivider />
-    <Link to="https://github.com/friedger/gitix/">
+    <Link to="https://github.com/friedger/gitix/" target="_blank" ref="noopener noreferrer">
       <DropDownItem>Help</DropDownItem>
     </Link>
     <NavLink

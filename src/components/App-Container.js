@@ -12,6 +12,7 @@ import Followers from "./Followers";
 import Following from "./Following";
 import ProfileMenu from "./ProfileMenu";
 import PullRequests from "./PullRequests";
+import CreateRepo from "./CreateRepo";
 import Issues from "./Issues";
 import Stars from "./Stars";
 import User from "./User";
@@ -72,17 +73,18 @@ const Home = ({
   );
 };
 
-function App (props) {
+function App(props) {
   const [state, setState] = useState({ viewer: null });
   const { userData } = useBlockstack();
-  useEffect( () => {
+  useEffect(() => {
     if (userData) {
       const user = userData;
       const avatarUrl =
-        user.profile &&
-        user.profile.image &&
-        user.profile.image.length > 0 &&
-        user.profile.image[0].contentUrl;
+        (user.profile &&
+          user.profile.image &&
+          user.profile.image.length > 0 &&
+          user.profile.image[0].contentUrl) ||
+        "/images/user.png";
       const username = user.username || user.identityAddress;
       const userFullName = user.profile && user.profile.name;
       const bio = user.profile && user.profile.description;
@@ -98,61 +100,62 @@ function App (props) {
         }
       });
     }
-  }, [userData])
+  }, [userData]);
 
-    const { viewer } = state;
+  const { viewer } = state;
 
-    const avatarUrl = viewer ? viewer.avatarUrl : "";
-    const userFullName = viewer ? viewer.userFullName : "";
-    const username = viewer ? viewer.username : "";
-    const location = viewer ? viewer.location : "";
-    const company = viewer ? viewer.company : "";
-    const bio = viewer ? viewer.bio : "";
-    const organizations = viewer ? viewer.organizations : {};
+  const avatarUrl = viewer ? viewer.avatarUrl : "";
+  const userFullName = viewer ? viewer.userFullName : "";
+  const username = viewer ? viewer.username : "";
+  const location = viewer ? viewer.location : "";
+  const company = viewer ? viewer.company : "";
+  const bio = viewer ? viewer.bio : "";
+  const organizations = viewer ? viewer.organizations : {};
 
-    return (
-          <section>
-            <Nav avatarUrl={avatarUrl} username={username} />
-            <Switch>
-              <Route
-                path={`${process.env.PUBLIC_URL}/login`}
-                component={LoginScreen}
-              />
-              <Route
-                path={`${process.env.PUBLIC_URL}/issues`}
-                component={Issues}
-              />
-              <Route
-                path={`${process.env.PUBLIC_URL}/pullrequests`}
-                component={PullRequests}
-              />
-              <Route
-                exact
-                path={`${process.env.PUBLIC_URL}/u/:user`}
-                component={User}
-              />
-              <Route
-                path={`${process.env.PUBLIC_URL}/`}
-                render={() => (
-                  <>
-                    {viewer && (
-                      <Home
-                        avatarUrl={avatarUrl}
-                        userFullName={userFullName}
-                        username={username}
-                        location={location}
-                        company={company}
-                        bio={bio}
-                        organizations={organizations}
-                      />
-                    )}
-                    {!userData && <LoginScreen />}
-                  </>
-                )}
-              />
-            </Switch>
-          </section>
-        )
+  return (
+    <section>
+      <Nav avatarUrl={avatarUrl} username={username} />
+      <Switch>
+        <Route
+          path={`${process.env.PUBLIC_URL}/login`}
+          component={LoginScreen}
+        />
+        <Route path={`${process.env.PUBLIC_URL}/issues`} component={Issues} />
+        <Route
+          path={`${process.env.PUBLIC_URL}/pullrequests`}
+          component={PullRequests}
+        />
+        <Route
+          path={`${process.env.PUBLIC_URL}/new-repo`}
+          component={CreateRepo}
+        />
+        <Route
+          exact
+          path={`${process.env.PUBLIC_URL}/u/:user`}
+          component={User}
+        />
+        <Route
+          path={`${process.env.PUBLIC_URL}/`}
+          render={() => (
+            <>
+              {viewer && (
+                <Home
+                  avatarUrl={avatarUrl}
+                  userFullName={userFullName}
+                  username={username}
+                  location={location}
+                  company={company}
+                  bio={bio}
+                  organizations={organizations}
+                />
+              )}
+              {!userData && <LoginScreen />}
+            </>
+          )}
+        />
+      </Switch>
+    </section>
+  );
 }
 
 const ProfileContainer = styled.section`
