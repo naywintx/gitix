@@ -13,6 +13,7 @@ import {
   putFollowing
 } from "../lib/blockstack";
 import { getUserAppFileUrl, UserSession } from "blockstack";
+import Relation from "./models";
 
 class User extends Component {
   state = {
@@ -110,13 +111,21 @@ class User extends Component {
     const { user } = this.state;
     getFollowing().then(following => {
       const avatarUrl =
-        user.image && user.image.length > 0 && user.image[0].contentUrl;
+        (user.image && user.image.length > 0 && user.image[0].contentUrl) ||
+        "/images/user.png";
       following.push({
         avatarUrl,
         name: user.name,
         username: this.props.match.params.user,
         bio: user.description
       });
+      if (followPublicly) {
+        let relation = Relation({
+          follower: currentUsername,
+          followee: viewedUsername
+        });
+        relation.save();
+      }
       putFollowing(following).then(
         this.setState({ updating: false, isFollowingUser: true })
       );
@@ -163,7 +172,8 @@ class User extends Component {
     );
 
     const avatarUrl =
-      user.image && user.image.length > 0 && user.image[0].contentUrl;
+      (user.image && user.image.length > 0 && user.image[0].contentUrl) ||
+      "/images/user.png";
     const userFullName = user.name;
     const username = this.props.match.params.user;
     const location = null;
