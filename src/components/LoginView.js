@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { AppConfig, UserSession } from "blockstack";
 import { BlockstackButton } from "react-blockstack-button";
 import { useBlockstack } from "react-blockstack";
 

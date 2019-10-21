@@ -10,10 +10,11 @@ import {
   getFollowing,
   isUserSignedIn,
   lookupProfile,
-  putFollowing
+  putFollowing,
+  loadUserData
 } from "../lib/blockstack";
 import { getUserAppFileUrl, UserSession } from "blockstack";
-import Relation from "./models";
+import { Relation } from "./models";
 
 class User extends Component {
   state = {
@@ -42,7 +43,8 @@ class User extends Component {
     this.setState({
       loadingFollowing: true,
       loading: true,
-      isUserSignedIn: isUserSignedIn()
+      isUserSignedIn: isUserSignedIn(),
+      currentUser: loadUserData()
     });
     lookupProfile(username).then(
       user => {
@@ -108,21 +110,23 @@ class User extends Component {
 
   followUser() {
     this.setState({ updating: true });
-    const { user } = this.state;
+    const { user, currentUser } = this.state;
+    const followPublicly = currentUser && currentUser.username;
     getFollowing().then(following => {
       const avatarUrl =
         (user.image && user.image.length > 0 && user.image[0].contentUrl) ||
         "/images/user.png";
+      const username = this.props.match.params.user;
       following.push({
         avatarUrl,
         name: user.name,
-        username: this.props.match.params.user,
+        username,
         bio: user.description
       });
       if (followPublicly) {
-        let relation = Relation({
-          follower: currentUsername,
-          followee: viewedUsername
+        let relation = new Relation({
+          follower: currentUser.username,
+          followee: username
         });
         relation.save();
       }
@@ -134,13 +138,23 @@ class User extends Component {
 
   unfollowUser() {
     this.setState({ updating: true });
+    const { currentUser } = this.state;
     getFollowing().then(following => {
-      const newList = following.filter(
-        f => f.username !== this.props.match.params.user
-      );
-      putFollowing(newList).then(
-        this.setState({ updating: false, isFollowingUser: false })
-      );
+      const username = this.props.match.params.user;
+      const newList = following.filter(f => f.username !== username);
+      Relation.fetchList({ follower: currentUser.username, followee: username })
+        .then(relations => {
+          console.log(relations);
+          return Promise.all(relations.map(r => r.destroy()));
+        })
+        .catch(e => {
+          console.log(e)
+        })
+        .then(() =>
+          putFollowing(newList).then(
+            this.setState({ updating: false, isFollowingUser: false })
+          )
+        );
     });
   }
 

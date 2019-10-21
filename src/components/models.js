@@ -1,6 +1,6 @@
 import { Model } from "radiks";
 
-class Relation extends Model {
+export class Relation extends Model {
   static className = "Relation";
   static validateUsername = true;
   static schema = {
