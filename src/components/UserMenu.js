@@ -4,38 +4,47 @@ import { NavLink } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { signUserOut } from "blockstack";
 
-const UserMenu = ({ username, id, closeMenu, history }) => (
-  <UserMenuContainer id={id}>
-    <DropDownItem>{`Signed in as ${username}`}</DropDownItem>
-    <DropDownDivider />
+const UserMenu = React.forwardRef(
+  ({ username, id, closeMenu, history }, ref) => {
+    return (
+      <UserMenuContainer id={id} ref={ref}>
+        <Link
+          href={`https://explorer.blockstack.org/name/${username}`}
+          target="_blank"
+        >
+          <DropDownItem>{`Signed in as ${username}`}</DropDownItem>
+        </Link>
+        <DropDownDivider />
 
-    <NavLink to="/" onClick={closeMenu}>
-      <DropDownItem>Your Profile</DropDownItem>
-    </NavLink>
+        <NavLink to="/" onClick={closeMenu}>
+          <DropDownItem>Your Profile</DropDownItem>
+        </NavLink>
 
-    <NavLink to="/followers" onClick={closeMenu}>
-      <DropDownItem>Your Followers</DropDownItem>
-    </NavLink>
+        <NavLink to="/followers" onClick={closeMenu}>
+          <DropDownItem>Your Followers</DropDownItem>
+        </NavLink>
 
-    <NavLink to="/stars" onClick={closeMenu}>
-      <DropDownItem>Your Stars</DropDownItem>
-    </NavLink>
-    <DropDownDivider />
-    <Link to="https://github.com/friedger/gitix/" target="_blank" ref="noopener noreferrer">
-      <DropDownItem>Help</DropDownItem>
-    </Link>
-    <NavLink
-      to="/"
-      onClick={() => {
-        signUserOut();
-        if (window) {
-          window.location.href = window.location.origin;
-        }
-      }}
-    >
-      <DropDownItem>Sign Out</DropDownItem>
-    </NavLink>
-  </UserMenuContainer>
+        <NavLink to="/stars" onClick={closeMenu}>
+          <DropDownItem>Your Stars</DropDownItem>
+        </NavLink>
+        <DropDownDivider />
+        <Link href="https://github.com/friedger/gitix/" target="_blank">
+          <DropDownItem>Help</DropDownItem>
+        </Link>
+        <NavLink
+          to="/"
+          onClick={() => {
+            signUserOut();
+            if (window) {
+              window.location.href = window.location.origin;
+            }
+          }}
+        >
+          <DropDownItem>Sign Out</DropDownItem>
+        </NavLink>
+      </UserMenuContainer>
+    );
+  }
 );
 
 const UserMenuContainer = styled.ul`
@@ -79,4 +88,17 @@ const DropDownDivider = styled.li`
 const Link = styled.a`
   text-decoration: none;
 `;
-export default withRouter(UserMenu);
+
+const withRouterAndRef = Wrapped => {
+  const WithRouter = withRouter(({ forwardRef, ...otherProps }) => (
+    <Wrapped ref={forwardRef} {...otherProps} />
+  ));
+  const WithRouterAndRef = React.forwardRef((props, ref) => (
+    <WithRouter {...props} forwardRef={ref} />
+  ));
+  const name = Wrapped.displayName || Wrapped.name;
+  WithRouterAndRef.displayName = `withRouterAndRef(${name})`;
+  return WithRouterAndRef;
+};
+
+export default withRouterAndRef(UserMenu);

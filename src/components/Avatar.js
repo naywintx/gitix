@@ -10,9 +10,10 @@ class UserAvatar extends React.Component {
       const user = loadUserData();
       const avatarUrl =
         (user.profile &&
-        user.profile.image &&
-        user.profile.image.length > 0 &&
-        user.profile.image[0].contentUrl) || "/images/user.png"
+          user.profile.image &&
+          user.profile.image.length > 0 &&
+          user.profile.image[0].contentUrl) ||
+        "/images/user.png";
       this.setState({
         loading: false,
         error: null,
@@ -27,12 +28,12 @@ class UserAvatar extends React.Component {
 
   render() {
     const { loading, error, data } = this.state;
-
+    const { onClick } = this.props;
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error :(</div>;
 
     if (data.viewer && data.viewer.avatarUrl) {
-      return <ProfilePic src={data.viewer.avatarUrl} />;
+      return <ProfilePic src={data.viewer.avatarUrl} onClick={onClick} />;
     } else {
       return <Placeholder />;
     }
