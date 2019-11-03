@@ -110,7 +110,8 @@ class User extends Component {
     const { user } = this.state;
     getFollowing().then(following => {
       const avatarUrl =
-        user.image && user.image.length > 0 && user.image[0].contentUrl;
+        (user.image && user.image.length > 0 && user.image[0].contentUrl) ||
+        "/images/user.png";
       following.push({
         avatarUrl,
         name: user.name,
@@ -163,7 +164,8 @@ class User extends Component {
     );
 
     const avatarUrl =
-      user.image && user.image.length > 0 && user.image[0].contentUrl;
+      (user.image && user.image.length > 0 && user.image[0].contentUrl) ||
+      "/images/user.png";
     const userFullName = user.name;
     const username = this.props.match.params.user;
     const location = null;

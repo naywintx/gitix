@@ -73,7 +73,7 @@ const Home = ({
   );
 };
 
-function App(props) {
+const App = () => {
   const [state, setState] = useState({ viewer: null });
   const { userData } = useBlockstack();
   useEffect(() => {
@@ -103,7 +103,7 @@ function App(props) {
   }, [userData]);
 
   const { viewer } = state;
-
+  console.log(state);
   const avatarUrl = viewer ? viewer.avatarUrl : "";
   const userFullName = viewer ? viewer.userFullName : "";
   const username = viewer ? viewer.username : "";
@@ -114,7 +114,7 @@ function App(props) {
 
   return (
     <section>
-      <Nav avatarUrl={avatarUrl} username={username} />
+      <Nav />
       <Switch>
         <Route
           path={`${process.env.PUBLIC_URL}/login`}
@@ -156,7 +156,7 @@ function App(props) {
       </Switch>
     </section>
   );
-}
+};
 
 const ProfileContainer = styled.section`
   max-width: 1012px;
