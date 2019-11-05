@@ -2334,6 +2334,11 @@ bitcoinjs-lib@^5.1.2:
     varuint-bitcoin "^1.0.4"
     wif "^2.0.1"
 
+blockstack-collections@0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/blockstack-collections/-/blockstack-collections-0.1.8.tgz#4027f587bcd00fe6ff78ffaa21a05bd10fa0aad0"
+  integrity sha512-EreKGxi6dxce1KKEeBQJFsd4tNrBcFB1UDLIaNUO9SjSpJ1/nioohQcKcBYKFssISqNjxMDK6dpxkjM8YMif2A==
+
 blockstack@^20.0.0-alpha.5:
   version "20.0.0-alpha.5"
   resolved "https://registry.yarnpkg.com/blockstack/-/blockstack-20.0.0-alpha.5.tgz#2c6915a149d05faabd216b79e02d5d9211fd041e"

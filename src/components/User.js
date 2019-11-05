@@ -14,7 +14,7 @@ import {
   loadUserData
 } from "../lib/blockstack";
 import { getUserAppFileUrl, UserSession } from "blockstack";
-import { Relation } from "./models";
+import { Relation, Relationship } from "./models";
 
 class User extends Component {
   state = {
@@ -123,12 +123,20 @@ class User extends Component {
         username,
         bio: user.description
       });
+      const Relationship = new Relationship({
+        followee: username
+      });
+      Relationship.save().then(r => {
+        console.log(r);
+      });
       if (followPublicly) {
         let relation = new Relation({
           follower: currentUser.username,
           followee: username
         });
-        relation.save();
+        relation.save().then(saved => {
+          console.log({ saved });
+        });
       }
       putFollowing(following).then(
         this.setState({ updating: false, isFollowingUser: true })
@@ -144,11 +152,11 @@ class User extends Component {
       const newList = following.filter(f => f.username !== username);
       Relation.fetchList({ follower: currentUser.username, followee: username })
         .then(relations => {
-          console.log(relations);
+          console.log({ relations });
           return Promise.all(relations.map(r => r.destroy()));
         })
         .catch(e => {
-          console.log(e)
+          console.log(e);
         })
         .then(() =>
           putFollowing(newList).then(

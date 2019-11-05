@@ -1,11 +1,12 @@
 import { AppConfig, lookupProfile as bsLookupProfile } from "blockstack";
-import { configure, getConfig, User, GroupMembership } from "radiks";
+import { configure, getConfig } from "radiks";
 import { initBlockstack } from "react-blockstack";
 import { RADIKS_SERVER_URL } from "../components/constants";
 import { sampleRepos } from "../components/Repositories";
+import { Relationship } from "../components/models";
 
 const appConfig = new AppConfig(
-  ["store_write", "publish_data"],
+  ["store_write", "publish_data", Relationship.scope],
   typeof window !== "undefined"
     ? window.location.origin
     : "http://localhost:8000",
@@ -34,63 +35,6 @@ export const loadUserData = () => {
 export const isUserSignedIn = () => {
   const { userSession } = getConfig();
   return isBrowser() && userSession.isUserSignedIn();
-};
-
-export const handleLogin = callback => {
-  const { userSession } = getConfig();
-
-  if (userSession.isUserSignedIn()) {
-    callback(loadUserData());
-  } else if (userSession.isSignInPending()) {
-    userSession.handlePendingSignIn().then(userData => {
-      User.createWithCurrentUser().then(() => {
-        callback(userData);
-      });
-    });
-  } else {
-    userSession.redirectToSignIn();
-  }
-};
-
-export const redirectToSignIn = redirectUri => {
-  const { userSession } = getConfig();
-  userSession.redirectToSignIn(redirectUri);
-};
-
-export const checkIsSignedIn = () => {
-  if (!isBrowser()) {
-    return Promise.resolve(false);
-  }
-  const { userSession } = getConfig();
-  if (userSession.isUserSignedIn()) {
-    return Promise.resolve(true);
-  } else if (userSession.isSignInPending()) {
-    return userSession.handlePendingSignIn().then(() => {
-      return User.createWithCurrentUser().then(() => {
-        window.history.replaceState(
-          "",
-          document.title,
-          window.location.pathname
-        );
-        return true;
-      });
-    });
-  } else {
-    return Promise.resolve(false);
-  }
-};
-
-export const logout = callback => {
-  const { userSession } = getConfig();
-  GroupMembership.clearStorage();
-  userSession.signUserOut("/");
-  callback();
-};
-
-export const encryptContent = message => {
-  const { userSession } = getConfig();
-  console.log("encrypting " + message);
-  return userSession.encryptContent(message);
 };
 
 export const lookupProfile = username => bsLookupProfile(username);

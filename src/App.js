@@ -25,6 +25,7 @@ const App = () => {
 
   useEffect(() => {
     if (userData) {
+      console.log("user configured")
       User.createWithCurrentUser().then(() => {
         setSignIn({ checking: false, user: userData, isSignedIn: true });
       });

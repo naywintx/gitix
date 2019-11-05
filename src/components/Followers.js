@@ -1,12 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Relation } from "./models";
+import { useBlockstack } from "react-blockstack";
+import { lookupProfile } from "../lib/blockstack";
 
 const Followers = () => {
-  const [followerList] = useState([]);
+  const [followerList, setFollowerList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { userData } = useBlockstack();
 
+  useEffect(() => {
+    setLoading(true);
+    async function fetchFollowers() {
+      const f = await Relation.fetchList({ followee: userData.username });
+      console.log({ f });
+      return f;
+    }
+
+    fetchFollowers().then(followerList => {
+      setFollowerList(followerList);
+      Promise.all(
+        followerList.map(f => {
+          console.log(f);
+          return lookupProfile(f.attrs.follower).then(p => {
+            console.log(p);
+            return {
+              name: p.name,
+              login: f.attrs.follower,
+              avatarUrl: p.image[0].contentUrl,
+              bio: p.description
+            };
+          });
+        })
+      ).then(profiles => {
+        setFollowerList(profiles);
+        setLoading(false);
+      });
+    });
+  }, [userData.username]);
   const followers =
     followerList.length > 0 ? (
       followerList.map((follower, i) => {
+        console.log(follower);
         return (
           <FollowersCard key={i}>
             <FollowersContainer>
@@ -29,11 +64,14 @@ const Followers = () => {
         );
       })
     ) : (
-      <div>Coming soon</div>
+      <div>Share your profile with your friends to follow you.</div>
     );
   return (
     <>
-      <section>{followers}</section>
+      <section>
+        {followers}
+        {loading && <div>Loading...</div>}
+      </section>
     </>
   );
 };

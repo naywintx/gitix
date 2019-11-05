@@ -3,6 +3,8 @@ import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
 import { getFile, loadUserData } from "blockstack";
 import { NavLink } from "react-router-dom";
+import { Relationship } from "./models";
+import { lookupProfile } from "../lib/blockstack";
 
 const suggestedUsers = [
   {
@@ -26,10 +28,9 @@ const suggestedUsers = [
     username: "dantrevino.id",
     bio: "Life, Liberty, and the Pursuit of Open Standards"
   }
-
 ];
 
-const toFollowingUser = (follower, i) => {
+export const toFollowingUser = (follower, i) => {
   return (
     <FollowersCard key={i}>
       <FollowersContainer>
@@ -72,15 +73,52 @@ const Following = () => {
       }
       setFollowing(followingUsers);
 
-      setSuggestedFollowers(
-        suggestedUsers.filter(
-          u =>
-            u.username !== name &&
-            followingUsers.filter(fu => fu.username === u.username).length === 0
-        )
-      );
+      const relations = [];
+      Relationship.list(relationId => {
+        relations.push(relationId);
+        return true;
+      }).then(() => {
+        Promise.all(
+          relations.filter(friend => followingUsers.findIndex(u => u.username == friend) < 0)
+          .map(username =>
+            lookupProfile(username)
+              .then(p => {
+                console.log(p)
+                return {
+                  name: p.name,
+                  username,
+                  avatarUrl: p.image && p.image[0].contentUrl || "/images/user.png",
+                  bio: p.description
+                };
+              })
+              .catch(e => {
+                return { error: e };
+              })
+          )
+        ).then(friends => {
+          const gitixSuggestions = suggestedUsers.filter(
+            u =>
+              u.username !== name &&
+              followingUsers.filter(fu => fu.username === u.username).length ===
+                0
+          );
+          console.log({ gitixSuggestions });
+          var suggestions = gitixSuggestions.concat(
+            friends.filter(
+              f =>
+                !f.hasOwnProperty("error") &&
+                gitixSuggestions.findIndex(
+                  gitixSuggestion => gitixSuggestion.username == f.username
+                ) < 0
+            )
+          );
+          console.log({ suggestions });
 
-      setLoading(false);
+          setSuggestedFollowers(suggestions);
+
+          setLoading(false);
+        });
+      });
     });
   }, []);
 
