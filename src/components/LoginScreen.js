@@ -4,7 +4,7 @@ import { BlockstackButton } from "react-blockstack-button";
 import { useBlockstack } from "react-blockstack";
 
 const LoginScreen = () => {
-  const { signIn } = useBlockstack()
+  const { signIn } = useBlockstack();
   return (
     <LoginContainer>
       <Logo height="128" viewBox="0 0 97 97" width="128">
@@ -15,6 +15,9 @@ const LoginScreen = () => {
       </Logo>
       <Title>Gitix</Title>
       <Subtitle>Decentralized Home of All Git Contributions</Subtitle>
+      <LoginLink href="https://www.gitix.org/">
+        Learn more
+      </LoginLink>
       <LoginLink>
         <BlockstackButton variant="light" onClick={signIn} />
       </LoginLink>
@@ -32,20 +35,20 @@ const LoginContainer = styled.div`
   flex-direction: column;
   position: fixed;
   width: 100%;
+  margin-top: -24px;
 `;
 
 const Title = styled.p`
   color: #fff;
   font-size: 24px;
   font-weight: 600;
-  margin: 20px 0 10px 0;
+  margin: 0 0 0 0;
 `;
 
 const Subtitle = styled.p`
   color: #fff;
   font-size: 20px;
   font-weight: 600;
-  margin: 20px 0 10px 0;
 `;
 
 const LoginLink = styled.a`
@@ -54,6 +57,7 @@ const LoginLink = styled.a`
   &:hover {
     color: #ccc;
   }
+  margin-top: 20px;
 `;
 const Logo = styled.svg`
   fill: #fff;

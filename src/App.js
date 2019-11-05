@@ -3,6 +3,7 @@ import AppContainer from "./components/App-Container";
 import { withRouter } from "react-router-dom";
 import { useBlockstack } from "react-blockstack";
 import { Helmet } from "react-helmet";
+import Footer from "./components/Footer";
 
 const NotSignedIn = {
   checking: false,
@@ -11,7 +12,7 @@ const NotSignedIn = {
 };
 
 const App = () => {
-  const [signIn, setSignIn] = useState({ ...NotSignedIn, checking: true });
+  const [ , setSignIn] = useState({ ...NotSignedIn, checking: true });
   const { userData } = useBlockstack();
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const App = () => {
       </Helmet>
 
       <AppContainer />
+      <Footer/>
     </>
   );
 };
