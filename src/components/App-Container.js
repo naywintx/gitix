@@ -103,7 +103,6 @@ const App = () => {
   }, [userData]);
 
   const { viewer } = state;
-  console.log(state);
   const avatarUrl = viewer ? viewer.avatarUrl : "";
   const userFullName = viewer ? viewer.userFullName : "";
   const username = viewer ? viewer.username : "";

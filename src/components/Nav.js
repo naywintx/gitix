@@ -48,7 +48,7 @@ const ClickOutside = React.forwardRef(({ children, onClick }, ref) => {
 
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { userData, signIn, signOut } = useBlockstack();
+  const { userData, signOut } = useBlockstack();
 
   const username = userData && userData.username;
   const isSignedIn = !!signOut;

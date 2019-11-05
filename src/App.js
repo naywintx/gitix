@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import AppContainer from "./components/App-Container";
 import { withRouter } from "react-router-dom";
 import { useBlockstack } from "react-blockstack";
-import { checkIsSignedIn } from "./lib/blockstack";
 import { Helmet } from "react-helmet";
 import { configure, User } from "radiks";
 import { RADIKS_SERVER_URL } from "./components/constants";
+import Footer from "./components/Footer";
 
 const NotSignedIn = {
   checking: false,
@@ -14,7 +14,7 @@ const NotSignedIn = {
 };
 
 const App = () => {
-  const [signIn, setSignIn] = useState({ ...NotSignedIn, checking: true });
+  const [ , setSignIn] = useState({ ...NotSignedIn, checking: true });
   const { userData, userSession } = useBlockstack();
   useEffect(() => {
     configure({
@@ -52,6 +52,7 @@ const App = () => {
       </Helmet>
 
       <AppContainer />
+      <Footer/>
     </>
   );
 };

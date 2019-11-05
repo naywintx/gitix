@@ -3,11 +3,11 @@ import styled from "styled-components";
 import { BlockstackButton } from "react-blockstack-button";
 import { useBlockstack } from "react-blockstack";
 
-const LoginScreen = () => {
-  const { signIn } = useBlockstack()
+const LoginView = () => {
+  const { signIn } = useBlockstack();
   return (
     <LoginContainer>
-        <BlockstackButton variant="light" onClick={signIn} />
+      <BlockstackButton variant="light" onClick={signIn} />
     </LoginContainer>
   );
 };
@@ -19,4 +19,4 @@ const LoginContainer = styled.div`
   flex-direction: column;
 `;
 
-export default LoginScreen;
+export default LoginView;
