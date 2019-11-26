@@ -111,7 +111,7 @@ class Repo extends Component {
             profile
           </DeleteAllButton>
         )}
-        {repos.length == 0 && (
+        {repos.length === 0 && (
           <PlaceHolder>Add some of your git repositories here...</PlaceHolder>
         )}
       </div>
