@@ -1,6 +1,6 @@
 {
   "name": "gitix",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "/",
   "dependencies": {
     "@babel/node": "^7.7.4",
