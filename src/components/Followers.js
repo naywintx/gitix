@@ -24,16 +24,11 @@ const Followers = () => {
 
   useEffect(() => {
     setLoading(true);
-    async function fetchFollowers() {
-      const f = await Relation.fetchList({ followee: userData.username });
-      console.log({ f });
-      return f;
-    }
 
-    fetchFollowers().then(followerList => {
-      setFollowerList(followerList);
+    Relation.fetchList({ followee: userData.username }).then(followers => {
+      setFollowerList(followers);
       Promise.all(
-        followerList.map(f => {
+        followers.map(f => {
           console.log(f);
           return lookupProfile(f.attrs.follower).then(p => {
             console.log(p);
@@ -83,6 +78,8 @@ const Followers = () => {
       {!navigator ||
         (!navigator.share && !isAndroid && (
           <>
+            Share your profile
+            <br />
             <div className="share">
               <FacebookShareButton
                 url={url}
@@ -125,7 +122,7 @@ const Followers = () => {
               <EmailShareButton
                 url={url}
                 subject={title}
-                body="body"
+                body="Feel free to follow my gitix profile"
                 className="share-button"
               >
                 <EmailIcon size={32} round />

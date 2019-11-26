@@ -3,6 +3,7 @@ import { Container, Grid, Typography } from "@material-ui/core";
 import AboutIcon from "@material-ui/icons/Info";
 import SupportIcon from "@material-ui/icons/Help";
 import DonateIcon from "@material-ui/icons/Stars";
+import { RADIKS_SERVER_URL } from "./constants";
 const styles = {
   tinyIcon: {
     width: 12,
@@ -49,6 +50,7 @@ export default () => (
           </a>
           <br />© {new Date().getFullYear()}, OpenIntents
           <br />Version {process.env.REACT_APP_VERSION}
+          <br />Radiks Server: {RADIKS_SERVER_URL}
         </Typography>
       </Grid>
       <Grid item xs={12} sm={4}>

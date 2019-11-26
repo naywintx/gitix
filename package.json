@@ -3,15 +3,22 @@
   "version": "0.2.0",
   "homepage": "/",
   "dependencies": {
+    "@babel/node": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-react": "^7.7.4",
     "@material-ui/core": "^4.5.2",
     "@material-ui/icons": "^4.5.1",
     "blockstack": "^20.0.0-alpha.5",
     "blockstack-collections": "0.1.8",
+    "cors": "^2.8.5",
+    "express-ws": "^4.0.0",
     "github-calendar": "^1.3.2",
     "gitstar-components": "^1.0.5",
     "lodash": "^4.17.15",
     "moment": "^2.21.0",
     "radiks": "^0.3.0-beta.1",
+    "radiks-server": "^0.3.0-beta.1",
     "react": "^16.11.0",
     "react-blockstack": "^0.6.3",
     "react-blockstack-button": "^0.1.0",
@@ -24,10 +31,12 @@
     "styled-components": "^4.4.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "babel-node": "babel-node --config-file ./babel-server.config.js",
+    "start-web": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start": "NODE_ENV=production yarn babel-node server"
   },
   "browserslist": [
     ">0.2%",

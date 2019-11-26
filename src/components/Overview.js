@@ -4,9 +4,8 @@ import LoadingIndicator from "./LoadingIndicator";
 import RepoCard from "./RepoCard";
 import {
   getRepositories,
-  putRepositories,
   isUserSignedIn,
-  getGithubRepos
+  getFollowing
 } from "../lib/blockstack";
 
 class Overview extends Component {
@@ -17,20 +16,25 @@ class Overview extends Component {
         if (repositories) {
           this.setState({ repositories });
         } else {
-          //const user = loadUserData();
-          //this.addGithubRepos(user.profile);
+          repositories = [];
         }
+        getFollowing().then(followees =>
+          followees.map(f => {
+            return getRepositories(f.username).then(followeeRepositories => {
+              if (followeeRepositories) {
+                followeeRepositories = followeeRepositories.map(r => {
+                  return { ...r, name: `${r.name} (${f.username})` };
+                });
+
+                repositories = repositories.concat(followeeRepositories);
+                this.setState({ repositories });
+              }
+              return null;
+            });
+          })
+        );
       });
     }
-  }
-
-  addGithubRepos(profile) {
-    getGithubRepos(profile).then(repositories => {
-      if (repositories) {
-        this.setState({ repositories });
-        putRepositories(repositories);
-      }
-    });
   }
 
   render() {

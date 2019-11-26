@@ -19,6 +19,7 @@ import { Relation } from "./models";
 class User extends Component {
   state = {
     repositories: [],
+    githubRepositories: [],
     user: {},
     loading: true,
     loadingFollowing: true,
@@ -75,13 +76,12 @@ class User extends Component {
 
         getRepositories(username)
           .then(repositories => {
-            console.log({ repositories });
-            if (repositories) {
+            if (repositories && repositories.length > 0) {
               this.setState({ repositories });
             } else {
-              getGithubRepos(user).then(repositories => {
-                if (repositories) {
-                  this.setState({ repositories, loading: false });
+              getGithubRepos(user).then(githubRepositories => {
+                if (githubRepositories) {
+                  this.setState({ githubRepositories, loading: false });
                 } else {
                   this.setState({ loading: false });
                 }
@@ -163,6 +163,7 @@ class User extends Component {
   render() {
     const {
       repositories,
+      githubRepositories,
       user,
       loading,
       updating,
@@ -173,19 +174,25 @@ class User extends Component {
       isUserSignedIn
     } = this.state;
 
-    console.log({ repos: repositories });
-    const repos = repositories ? (
-      repositories.map((repo, i) => {
-        // Only show 6 repos
-        if (i < 6) {
-          return <RepoCard key={repo.name} repo={repo} className="card" />;
-        } else {
-          return null;
-        }
-      })
-    ) : (
-      <LoadingIndicator />
-    );
+    const overviewTitle =
+      repositories && repositories.length > 0
+        ? "Published Repositories"
+        : "Github Repositories";
+    var repos =
+      repositories && repositories.length > 0
+        ? repositories
+        : githubRepositories;
+    repos =
+      repos && repos.length > 0
+        ? repos.map((repo, i) => {
+            // Only show 6 repos
+            if (i < 6) {
+              return <RepoCard key={repo.name} repo={repo} className="card" />;
+            } else {
+              return null;
+            }
+          })
+        : [];
 
     const avatarUrl =
       (user.image && user.image.length > 0 && user.image[0].contentUrl) ||
@@ -249,8 +256,8 @@ class User extends Component {
           {!loading && !invalidUser && (
             <InformationContainer>
               <div>
-                {repos.length > 1 && (
-                  <OverviewTitle>Repositories</OverviewTitle>
+                {repos.length > 0 && (
+                  <OverviewTitle>{overviewTitle}</OverviewTitle>
                 )}
                 {repos.length === 0 && (
                   <OverviewTitle>No repositories published yet</OverviewTitle>
