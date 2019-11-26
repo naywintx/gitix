@@ -5,15 +5,25 @@ import { withRouter } from "react-router-dom";
 import { signUserOut } from "blockstack";
 
 const UserMenu = React.forwardRef(
-  ({ username, id, closeMenu, history }, ref) => {
+  ({ username, address, id, closeMenu, history }, ref) => {
     return (
       <UserMenuContainer id={id} ref={ref}>
-        <Link
-          href={`https://explorer.blockstack.org/name/${username}`}
-          target="_blank"
-        >
-          <DropDownItem>{`Signed in as ${username}`}</DropDownItem>
-        </Link>
+        {username && (
+          <Link
+            href={`https://explorer.blockstack.org/name/${username}`}
+            target="_blank"
+          >
+            <DropDownItem>{`Signed in as ${username}`}</DropDownItem>
+          </Link>
+        )}
+
+        {!username && <Link
+            href={`https://explorer.blockstack.org/address/${address}`}
+            target="_blank"
+          >
+            <DropDownItem>{`Signed in as ${address}`}</DropDownItem>
+          </Link>}
+
         <DropDownDivider />
 
         <NavLink to="/" onClick={closeMenu}>
