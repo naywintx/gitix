@@ -14,7 +14,7 @@ import {
   loadUserData
 } from "../lib/blockstack";
 import { getUserAppFileUrl, UserSession } from "blockstack";
-import { Relation, Relationship } from "./models";
+import { Relation } from "./models";
 
 class User extends Component {
   state = {
@@ -122,12 +122,6 @@ class User extends Component {
         name: user.name,
         username,
         bio: user.description
-      });
-      const Relationship = new Relationship({
-        followee: username
-      });
-      Relationship.save().then(r => {
-        console.log(r);
       });
       if (followPublicly) {
         let relation = new Relation({

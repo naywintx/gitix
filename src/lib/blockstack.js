@@ -3,10 +3,9 @@ import { configure, getConfig } from "radiks";
 import { initBlockstack } from "react-blockstack";
 import { RADIKS_SERVER_URL } from "../components/constants";
 import { sampleRepos } from "../components/Repositories";
-import { Relationship } from "../components/models";
 
 const appConfig = new AppConfig(
-  ["store_write", "publish_data", Relationship.scope],
+  ["store_write", "publish_data"],
   typeof window !== "undefined"
     ? window.location.origin
     : "http://localhost:8000",
