@@ -33,10 +33,6 @@ class Repo extends Component {
       getRepositories().then(repos => {
         if (repos && repos.length > 0) {
           this.setState({ repos });
-        } else {
-          this.setState({
-            repos: sampleRepos
-          });
         }
         this.setState({ loading: false });
       });
@@ -101,7 +97,7 @@ class Repo extends Component {
           </SearchContainer>
         )}
         {repositories}
-        {repos.length > 0 && (
+        {repos.length > 1 && (
           <DeleteAllButton
             onClick={() => {
               deleteRepositories().then(() => {
@@ -114,6 +110,9 @@ class Repo extends Component {
             <ButtonIcon className="fa fa-book" /> Remove all repos from gitix
             profile
           </DeleteAllButton>
+        )}
+        {repos.length == 0 && (
+          <PlaceHolder>Add some of your git repositories here...</PlaceHolder>
         )}
       </div>
     );
@@ -192,5 +191,10 @@ const SearchBox = styled.input`
 `;
 
 const ButtonIcon = styled.i``;
+
+const PlaceHolder = styled.div`
+  padding: 16px;
+  margin-bottom: 16px;
+`;
 
 export default Repo;

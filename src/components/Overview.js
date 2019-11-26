@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
-import { sampleRepos } from "./Repositories";
 import RepoCard from "./RepoCard";
 import {
   getRepositories,
@@ -30,8 +29,6 @@ class Overview extends Component {
       if (repositories) {
         this.setState({ repositories });
         putRepositories(repositories);
-      } else {
-        this.setState({ repositories: sampleRepos });
       }
     });
   }
@@ -55,7 +52,7 @@ class Overview extends Component {
     return (
       <div>
         <OverviewTitle>Popular Repositories</OverviewTitle>
-        {repos.length > 1 && <RepoContainer>{repos}</RepoContainer>}
+        {repos.length > 0 && <RepoContainer>{repos}</RepoContainer>}
         {repos.length === 0 && (
           <a href={`${process.env.PUBLIC_URL}/#/repositories/add`}>
             Add your first repo

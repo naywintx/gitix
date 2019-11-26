@@ -21,7 +21,7 @@ const ClickOutside = React.forwardRef(({ children, onClick }, ref) => {
   const refs = React.Children.map(children, () => React.createRef());
   const handleClick = useCallback(
     e => {
-      console.log(refs)
+      console.log(refs);
       const isOutside = refs.every(ref => {
         console.log(ref);
         return !ref.current.contains(e.target);
@@ -51,6 +51,7 @@ const Nav = () => {
   const { userData, signOut } = useBlockstack();
 
   const username = userData && userData.username;
+  const address = userData && userData.identityAddress;
   const isSignedIn = !!signOut;
 
   const openMenu = () => {
@@ -111,6 +112,7 @@ const Nav = () => {
                 <UserMenu
                   id={"dropdown-menu"}
                   username={username}
+                  address={address}
                   closeMenu={closeMenu}
                 />
               </ClickOutside>
@@ -119,7 +121,7 @@ const Nav = () => {
         )}
         {!isSignedIn && <LoginView />}
       </Header>
-      {isSignedIn && (
+      {isSignedIn && username && (
         <>
           Share your public profile:{" "}
           <ShareLink
