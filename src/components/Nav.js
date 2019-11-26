@@ -122,7 +122,7 @@ const Nav = () => {
         {!isSignedIn && <LoginView />}
       </Header>
       {isSignedIn && username && (
-        <>
+        <ShareLinkContainer>
           Share your public profile:{" "}
           <ShareLink
             href={`${process.env.PUBLIC_URL}/#/u/${username}`}
@@ -131,7 +131,7 @@ const Nav = () => {
           >
             https://app.gitix.org/#/u/{username}
           </ShareLink>
-        </>
+        </ShareLinkContainer>
       )}
     </HeaderContainer>
   );
@@ -153,6 +153,10 @@ const Header = styled.div`
   @media (min-width: 768px) {
     display: flex;
   }
+`;
+
+const ShareLinkContainer = styled.div`
+  padding: 0 20px;
 `;
 
 const Logo = styled.svg`

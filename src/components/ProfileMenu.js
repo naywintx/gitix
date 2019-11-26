@@ -51,18 +51,6 @@ const ProfileMenu = () => {
       <NavLink
         style={Linkstyles()}
         activeStyle={activeStyles()}
-        exact
-        to={`${process.env.PUBLIC_URL}/stars`}
-      >
-        Stars
-        {viewer && viewer.starredRepositories && (
-          <Counter>{viewer.starredRepositories.totalCount}</Counter>
-        )}
-      </NavLink>
-
-      <NavLink
-        style={Linkstyles()}
-        activeStyle={activeStyles()}
         to={`${process.env.PUBLIC_URL}/followers`}
       >
         Followers

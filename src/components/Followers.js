@@ -3,6 +3,19 @@ import styled from "styled-components";
 import { Relation } from "./models";
 import { useBlockstack } from "react-blockstack";
 import { lookupProfile } from "../lib/blockstack";
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  TwitterShareButton,
+  TwitterIcon,
+  TelegramShareButton,
+  TelegramIcon,
+  RedditShareButton,
+  RedditIcon,
+  EmailShareButton,
+  EmailIcon
+} from "react-share";
+import "./Followers.css";
 
 const Followers = () => {
   const [followerList, setFollowerList] = useState([]);
@@ -38,10 +51,94 @@ const Followers = () => {
       });
     });
   }, [userData.username]);
+
+  const isAndroid = /(android)/i.test(navigator.userAgent);
+  const title = "My Gitix Profile";
+  const url = `https://app.gitix.org/#/u/${userData.username}`;
+  const shareButtons = (
+    <>
+      {navigator && navigator.share && (
+        <ShareButton
+          onClick={() =>
+            navigator.share({
+              title,
+              url
+            })
+          }
+        >
+          Share your profile
+        </ShareButton>
+      )}
+      {navigator && !navigator.share && isAndroid && (
+        <ShareButton
+          onClick={() => {
+            window.open(
+              `intent://share/#Intent;action=android.intent.action.SEND;S.android.intent.extra.TEXT=${title}:${url};end`
+            );
+          }}
+        >
+          Share your profile
+        </ShareButton>
+      )}
+      {!navigator ||
+        (!navigator.share && !isAndroid && (
+          <>
+            <div className="share">
+              <FacebookShareButton
+                url={url}
+                quote={title}
+                className="share-button"
+              >
+                <FacebookIcon size={32} round />
+              </FacebookShareButton>
+            </div>
+            <div className="share">
+              <TwitterShareButton
+                url={url}
+                title={title}
+                className="share-button"
+              >
+                <TwitterIcon size={32} round />
+              </TwitterShareButton>
+            </div>
+            <div className="share">
+              <TelegramShareButton
+                url={url}
+                title={title}
+                className="share-button"
+              >
+                <TelegramIcon size={32} round />
+              </TelegramShareButton>
+            </div>
+            <div className="share">
+              <RedditShareButton
+                url={url}
+                title={title}
+                windowWidth={660}
+                windowHeight={460}
+                className="share-button"
+              >
+                <RedditIcon size={32} round />
+              </RedditShareButton>
+            </div>
+            <div className="share">
+              <EmailShareButton
+                url={url}
+                subject={title}
+                body="body"
+                className="share-button"
+              >
+                <EmailIcon size={32} round />
+              </EmailShareButton>
+            </div>
+          </>
+        ))}
+    </>
+  );
+
   const followers =
     followerList.length > 0 ? (
       followerList.map((follower, i) => {
-        console.log(follower);
         return (
           <FollowersCard key={i}>
             <FollowersContainer>
@@ -64,13 +161,19 @@ const Followers = () => {
         );
       })
     ) : (
-      <div>Share your profile with your friends to follow you.</div>
+      <div>
+        Share your profile with your friends, family, colleagues to follow you.
+        <br />
+        Your repositories will appear in their overview page.
+      </div>
     );
   return (
     <>
       <section>
         {followers}
         {loading && <div>Loading...</div>}
+        <br />
+        {shareButtons}
       </section>
     </>
   );
@@ -137,6 +240,32 @@ const FollowerBio = styled.p`
   color: #586069;
   padding-left: 4px;
   margin-bottom: 4px;
+`;
+
+const ShareButton = styled.a`
+  cursor: pointer;
+  border-radius: 0.25em;
+  color: white;
+  background-color: #28a745;
+  background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+  font-size: 12px;
+  line-height: 20px;
+  padding: 3px 10px;
+  background-position: -1px -1px;
+  background-repeat: repeat-x;
+  background-size: 110% 110%;
+  border: 1px solid rgba(27, 31, 35, 0.2);
+  display: inline-block;
+  font-weight: 600;
+  position: relative;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-decoration: none;
+  box-sizing: border-box;
+  margin: 8px 0px;
+  &:hover: {
+    text-decoration: none;
+  }
 `;
 
 export default Followers;

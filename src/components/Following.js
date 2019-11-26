@@ -3,7 +3,6 @@ import styled from "styled-components";
 import LoadingIndicator from "./LoadingIndicator";
 import { getFile, loadUserData } from "blockstack";
 import { NavLink } from "react-router-dom";
-import { lookupProfile } from "../lib/blockstack";
 
 const suggestedUsers = [
   {
